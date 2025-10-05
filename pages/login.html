@@ -216,6 +216,7 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../assets/js/auth.js"></script>
     <script>
 
@@ -271,13 +272,22 @@
             
             try {
                 // Tentar login no servidor SQL
-                const response = await fetch('http://localhost:3001/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
+                // Usar Supabase diretamente
+                const { createClient } = supabase;
+                const supabaseClient = createClient(
+                    'https://tvccuvzcmnrqtrakudju.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
+                );
                 
-                const result = await response.json();
+                const { data, error } = await supabaseClient
+                    .from('usuarios')
+                    .select('id, nome, email, criado_em')
+                    .eq('email', email)
+                    .eq('senha', password);
+                
+                if (error) throw error;
+                
+                const result = data.length > 0 ? { success: true, user: data[0] } : { success: false, message: 'Email ou senha inválidos' };
                 
                 if (result.success) {
                     // Login bem-sucedido
@@ -386,21 +396,24 @@
             
             try {
                 // Tentar criar usuário no servidor SQL
-                const response = await fetch('http://localhost:3001/users', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome: name, email, senha: password })
-                });
+                // Usar Supabase diretamente
+                const { createClient } = supabase;
+                const supabaseClient = createClient(
+                    'https://tvccuvzcmnrqtrakudju.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
+                );
                 
-                const result = await response.json();
+                const { data, error } = await supabaseClient
+                    .from('usuarios')
+                    .insert([{ nome: name, email, senha: password }]);
                 
-                if (response.ok) {
+                if (!error) {
                     alert('Cadastro realizado com sucesso!');
                     document.getElementById('register-form').reset();
                     switchTab('login');
                     document.getElementById('login-email').value = email;
                 } else {
-                    alert(result.error || 'Erro ao criar conta');
+                    alert(error.message || 'Erro ao criar conta');
                 }
             } catch (error) {
                 console.error('Erro no cadastro:', error);
