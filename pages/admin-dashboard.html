@@ -3,942 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Administrativo - Ink Flow Studios</title>
+    <title>Dashboard Admin - Ink Flow</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
-    <link rel="stylesheet" href="../assets/css/fixes.css">
-    <link rel="stylesheet" href="../assets/css/admin-dashboard.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        .admin-container { max-width: 1200px; margin: 2rem auto; padding: 2rem; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: var(--secondary-dark); padding: 1.5rem; border-radius: 8px; text-align: center; }
+        .stat-number { font-size: 2rem; font-weight: bold; color: var(--accent-red); }
+        .data-section { background: var(--secondary-dark); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; }
+        .btn-logout { background: #dc3545; color: white; padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; }
+    </style>
 </head>
-<body class="admin-body">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="logo">
-                <i class="fas fa-crown"></i>
-                <span>Ink Flow Admin</span>
+<body>
+    <header>
+        <nav>
+            <a href="../index.html" class="logo">INK FLOW ADMIN</a>
+            <div class="admin-header">
+                <h1>Dashboard Administrativo</h1>
+                <button class="btn-logout" onclick="logout()">Sair</button>
             </div>
-            <button class="sidebar-toggle" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-        
-        <nav class="sidebar-nav">
-            <ul>
-                <li class="nav-item active">
-                    <a href="#dashboard" onclick="showSection('dashboard')">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#appointments" onclick="showSection('appointments')">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Agendamentos</span>
-                        <span class="badge" id="appointmentsBadge">0</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#clients" onclick="showSection('clients')">
-                        <i class="fas fa-users"></i>
-                        <span>Clientes</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#artists" onclick="showSection('artists')">
-                        <i class="fas fa-palette"></i>
-                        <span>Artistas</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#financial" onclick="showSection('financial')">
-                        <i class="fas fa-dollar-sign"></i>
-                        <span>Financeiro</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#inventory" onclick="showSection('inventory')">
-                        <i class="fas fa-boxes"></i>
-                        <span>Estoque</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#reports" onclick="showSection('reports')">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Relatórios</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#settings" onclick="showSection('settings')">
-                        <i class="fas fa-cog"></i>
-                        <span>Configurações</span>
-                    </a>
-                </li>
-            </ul>
         </nav>
-        
-        <div class="sidebar-footer">
-            <div class="user-info">
-                <div class="user-avatar">
-                    <i class="fas fa-user-shield"></i>
-                </div>
-                <div class="user-details">
-                    <span class="user-name">Administrador</span>
-                    <span class="user-role">Super Admin</span>
-                </div>
-            </div>
-            <button class="logout-btn" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
-        </div>
-    </aside>
+    </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Header -->
-        <header class="main-header">
-            <div class="header-left">
-                <button class="mobile-menu-btn" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <h1 class="page-title">Dashboard</h1>
-            </div>
-            
-            <div class="header-right">
-                <div class="theme-toggle">
-                    <button onclick="toggleTheme()" title="Alternar tema">
-                        <i class="fas fa-moon" id="themeIcon"></i>
-                    </button>
-                </div>
-                
-                <div class="notifications">
-                    <button class="notification-btn" onclick="toggleNotifications()">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-count" id="notificationCount">3</span>
-                    </button>
-                    <div class="notification-dropdown" id="notificationDropdown">
-                        <div class="notification-header">
-                            <h3>Notificações</h3>
-                            <button onclick="markAllAsRead()">Marcar todas como lidas</button>
-                        </div>
-                        <div class="notification-list" id="notificationList">
-                            <!-- Notificações serão carregadas aqui -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Dashboard Section -->
-        <section id="dashboard" class="content-section active">
-            <!-- Stats Cards -->
+    <main>
+        <div class="admin-container">
             <div class="stats-grid">
-                <div class="stat-card primary">
-                    <div class="stat-icon">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="totalAppointments">0</h3>
-                        <p>Total Agendamentos</p>
-                        <span class="stat-change positive">+12% este mês</span>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-agendamentos">0</div>
+                    <div>Total Agendamentos</div>
                 </div>
-                
-                <div class="stat-card success">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="todayAppointments">0</h3>
-                        <p>Agendamentos Hoje</p>
-                        <span class="stat-change positive">+3 desde ontem</span>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-usuarios">0</div>
+                    <div>Total Usuários</div>
                 </div>
-                
-                <div class="stat-card warning">
-                    <div class="stat-icon">
-                        <i class="fas fa-hourglass-half"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="pendingAppointments">0</h3>
-                        <p>Pendentes</p>
-                        <span class="stat-change neutral">Aguardando confirmação</span>
-                    </div>
-                </div>
-                
-                <div class="stat-card info">
-                    <div class="stat-icon">
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="monthlyRevenue">R$ 0</h3>
-                        <p>Receita Mensal</p>
-                        <span class="stat-change positive">+8% vs mês anterior</span>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="agendamentos-hoje">0</div>
+                    <div>Agendamentos Hoje</div>
                 </div>
             </div>
 
-            <!-- Charts Row -->
-            <div class="charts-row">
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3>Agendamentos por Mês</h3>
-                        <div class="chart-controls">
-                            <select id="chartPeriod">
-                                <option value="6">Últimos 6 meses</option>
-                                <option value="12">Último ano</option>
-                            </select>
-                        </div>
-                    </div>
-                    <canvas id="appointmentsChart"></canvas>
-                </div>
-                
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3>Tipos de Tatuagem</h3>
-                    </div>
-                    <canvas id="tattooTypesChart"></canvas>
-                </div>
+            <div class="data-section">
+                <h3>Agendamentos Recentes</h3>
+                <div id="agendamentos-list"></div>
             </div>
 
-            <!-- Recent Activity -->
-            <div class="activity-section">
-                <div class="activity-card">
-                    <div class="card-header">
-                        <h3>Atividade Recente</h3>
-                        <button class="btn-secondary" onclick="refreshActivity()">
-                            <i class="fas fa-sync-alt"></i> Atualizar
-                        </button>
-                    </div>
-                    <div class="activity-list" id="activityList">
-                        <!-- Atividades serão carregadas aqui -->
-                    </div>
-                </div>
-                
-                <div class="quick-actions-card">
-                    <div class="card-header">
-                        <h3>Ações Rápidas</h3>
-                    </div>
-                    <div class="quick-actions">
-                        <button class="action-btn primary" onclick="showSection('appointments')">
-                            <i class="fas fa-plus"></i>
-                            Novo Agendamento
-                        </button>
-                        <button class="action-btn success" onclick="showSection('clients')">
-                            <i class="fas fa-user-plus"></i>
-                            Novo Cliente
-                        </button>
-                        <button class="action-btn info" onclick="exportData()">
-                            <i class="fas fa-download"></i>
-                            Exportar Dados
-                        </button>
-                        <button class="action-btn warning" onclick="showSection('inventory')">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            Verificar Estoque
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Seção de Agendamentos -->
-        <section id="appointments" class="content-section">
-            <div class="section-header">
-                <h2>Gerenciar Agendamentos</h2>
-                <div class="section-actions">
-                    <button class="btn-secondary" onclick="exportAppointments()">
-                        <i class="fas fa-download"></i> Exportar
-                    </button>
-                    <button class="btn-primary" onclick="openAppointmentModal()">
-                        <i class="fas fa-plus"></i> Novo Agendamento
-                    </button>
-                </div>
-            </div>
-            
-            <div class="appointments-filters">
-                <div class="filter-group">
-                    <input type="text" id="appointmentSearch" placeholder="Buscar por cliente, telefone..." class="search-input">
-                    <select id="statusFilter" class="filter-select">
-                        <option value="">Todos os status</option>
-                        <option value="pendente">Pendente</option>
-                        <option value="confirmado">Confirmado</option>
-                        <option value="cancelado">Cancelado</option>
-                        <option value="concluido">Concluído</option>
-                    </select>
-                    <input type="date" id="dateFilter" class="filter-date">
-                </div>
-            </div>
-            
-            <div class="appointments-table-container">
-                <table class="appointments-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Cliente</th>
-                            <th>Contato</th>
-                            <th>Serviço</th>
-                            <th>Data/Hora</th>
-                            <th>Artista</th>
-                            <th>Status</th>
-                            <th>Valor</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="appointmentsTableBody">
-                        <!-- Agendamentos serão carregados aqui -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="table-pagination">
-                <div class="pagination-info">
-                    <span id="appointmentsPaginationInfo">Mostrando 0 de 0 agendamentos</span>
-                </div>
-                <div class="pagination-controls">
-                    <button onclick="previousPage()" id="prevPageBtn" disabled>
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <span id="currentPageInfo">Página 1 de 1</span>
-                    <button onclick="nextPage()" id="nextPageBtn" disabled>
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <section id="artists" class="content-section">
-            <div class="section-header">
-                <h2>Gerenciar Artistas</h2>
-                <div class="section-actions">
-                    <button class="btn-secondary" onclick="exportArtists()">
-                        <i class="fas fa-download"></i> Exportar
-                    </button>
-                    <button class="btn-primary" onclick="openArtistModal()">
-                        <i class="fas fa-user-plus"></i> Novo Artista
-                    </button>
-                </div>
-            </div>
-            
-            <div class="artists-filters">
-                <div class="filter-group">
-                    <input type="text" id="artistSearch" placeholder="Buscar por nome, especialidade..." class="search-input">
-                    <select id="artistStatusFilter" class="filter-select">
-                        <option value="">Todos os status</option>
-                        <option value="ativo">Ativo</option>
-                        <option value="ferias">Férias</option>
-                        <option value="afastado">Afastado</option>
-                        <option value="inativo">Inativo</option>
-                    </select>
-                    <select id="specialtyFilter" class="filter-select">
-                        <option value="">Todas especialidades</option>
-                        <option value="realismo">Realismo</option>
-                        <option value="tradicional">Tradicional</option>
-                        <option value="geometrico">Geométrico</option>
-                        <option value="aquarela">Aquarela</option>
-                        <option value="minimalista">Minimalista</option>
-                        <option value="cover-up">Cover-up</option>
-                        <option value="fine-line">Fine Line</option>
-                        <option value="blackwork">Blackwork</option>
-                        <option value="old-school">Old School</option>
-                        <option value="neo-tradicional">Neo Tradicional</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="artists-grid" id="artistsGrid">
-                <!-- Artistas serão carregados aqui -->
-            </div>
-        </section>
-        
-        <section id="clients" class="content-section">
-            <div class="section-header">
-                <h2>Gerenciar Clientes</h2>
-                <div class="section-actions">
-                    <button class="btn-secondary" onclick="exportClients()">
-                        <i class="fas fa-download"></i> Exportar
-                    </button>
-                    <button class="btn-primary" onclick="openClientModal()">
-                        <i class="fas fa-user-plus"></i> Novo Cliente
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Filtros e Busca -->
-            <div class="clients-filters">
-                <div class="filter-group">
-                    <input type="text" id="clientSearch" placeholder="Buscar por nome, telefone, email..." class="search-input">
-                    <select id="clientStatusFilter" class="filter-select">
-                        <option value="">Todos os status</option>
-                        <option value="novo">Novo</option>
-                        <option value="recorrente">Recorrente</option>
-                        <option value="vip">VIP</option>
-                        <option value="inativo">Inativo</option>
-                    </select>
-                    <select id="artistFilter" class="filter-select">
-                        <option value="">Todos os artistas</option>
-                        <option value="Marcus Silva">Marcus Silva</option>
-                        <option value="Ana Costa">Ana Costa</option>
-                        <option value="Rafael Santos">Rafael Santos</option>
-                        <option value="Carla Mendes">Carla Mendes</option>
-                    </select>
-                </div>
-            </div>
-            
-            <!-- Lista de Clientes -->
-            <div class="clients-grid" id="clientsGrid">
-                <!-- Clientes serão carregados aqui -->
-            </div>
-        </section>
-        
-        <!-- Modal de Cliente -->
-        <div id="clientModal" class="modal">
-            <div class="modal-content client-modal">
-                <div class="modal-header">
-                    <h3 id="clientModalTitle">Novo Cliente</h3>
-                    <button class="close-btn" onclick="closeClientModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <div class="modal-body">
-                    <div class="client-tabs">
-                        <button class="tab-btn active" onclick="showClientTab('basic')">Dados Básicos</button>
-                        <button class="tab-btn" onclick="showClientTab('history')">Histórico</button>
-                        <button class="tab-btn" onclick="showClientTab('preferences')">Preferências</button>
-                        <button class="tab-btn" onclick="showClientTab('financial')">Financeiro</button>
-                    </div>
-                    
-                    <!-- Aba Dados Básicos -->
-                    <div id="basicTab" class="tab-content active">
-                        <form id="clientForm">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Nome Completo *</label>
-                                    <input type="text" id="clientName" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>CPF</label>
-                                    <input type="text" id="clientCpf" placeholder="000.000.000-00">
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Telefone *</label>
-                                    <input type="tel" id="clientPhone" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="email" id="clientEmail">
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Data de Nascimento</label>
-                                    <input type="date" id="clientBirthdate">
-                                </div>
-                                <div class="form-group">
-                                    <label>Status</label>
-                                    <select id="clientStatus">
-                                        <option value="novo">Novo</option>
-                                        <option value="recorrente">Recorrente</option>
-                                        <option value="vip">VIP</option>
-                                        <option value="inativo">Inativo</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Instagram</label>
-                                <input type="text" id="clientInstagram" placeholder="@usuario">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Como conheceu o estúdio</label>
-                                <select id="clientSource">
-                                    <option value="">Selecione...</option>
-                                    <option value="instagram">Instagram</option>
-                                    <option value="indicacao">Indicação</option>
-                                    <option value="google">Google</option>
-                                    <option value="facebook">Facebook</option>
-                                    <option value="outros">Outros</option>
-                                </select>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <!-- Aba Histórico -->
-                    <div id="historyTab" class="tab-content">
-                        <div class="history-section">
-                            <h4>Histórico de Tatuagens</h4>
-                            <div id="clientTattooHistory">
-                                <!-- Histórico será carregado aqui -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Aba Preferências -->
-                    <div id="preferencesTab" class="tab-content">
-                        <div class="form-group">
-                            <label>Estilos Preferidos</label>
-                            <div class="checkbox-group">
-                                <label><input type="checkbox" value="tradicional"> Tradicional</label>
-                                <label><input type="checkbox" value="realismo"> Realismo</label>
-                                <label><input type="checkbox" value="geometrico"> Geométrico</label>
-                                <label><input type="checkbox" value="aquarela"> Aquarela</label>
-                                <label><input type="checkbox" value="minimalista"> Minimalista</label>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Artista Preferido</label>
-                            <select id="preferredArtist">
-                                <option value="">Nenhum</option>
-                                <option value="Marcus Silva">Marcus Silva</option>
-                                <option value="Ana Costa">Ana Costa</option>
-                                <option value="Rafael Santos">Rafael Santos</option>
-                                <option value="Carla Mendes">Carla Mendes</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Alergias/Sensibilidades</label>
-                            <textarea id="clientAllergies" placeholder="Descreva alergias ou sensibilidades conhecidas..."></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Observações Importantes</label>
-                            <textarea id="clientNotes" placeholder="Comportamento, preferências especiais, etc..."></textarea>
-                        </div>
-                    </div>
-                    
-                    <!-- Aba Financeiro -->
-                    <div id="financialTab" class="tab-content">
-                        <div class="financial-stats">
-                            <div class="stat-item">
-                                <span class="stat-label">Total Gasto:</span>
-                                <span class="stat-value" id="clientTotalSpent">R$ 0,00</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-label">Ticket Médio:</span>
-                                <span class="stat-value" id="clientAvgTicket">R$ 0,00</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-label">Última Visita:</span>
-                                <span class="stat-value" id="clientLastVisit">-</span>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Forma de Pagamento Preferida</label>
-                            <select id="preferredPayment">
-                                <option value="dinheiro">Dinheiro</option>
-                                <option value="cartao">Cartão</option>
-                                <option value="pix">PIX</option>
-                                <option value="parcelado">Parcelado</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="modal-footer">
-                    <button type="button" class="btn-secondary" onclick="closeClientModal()">Cancelar</button>
-                    <button type="button" class="btn-primary" onclick="saveClient()">Salvar Cliente</button>
-                </div>
+            <div class="data-section">
+                <h3>Usuários Cadastrados</h3>
+                <div id="usuarios-list"></div>
             </div>
         </div>
-
-        <!-- Modal de Artista -->
-        <div id="artistModal" class="modal">
-            <div class="modal-content artist-modal">
-                <div class="modal-header">
-                    <h3 id="artistModalTitle">Novo Artista</h3>
-                    <button class="close-btn" onclick="closeArtistModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <div class="modal-body">
-                    <div class="artist-tabs">
-                        <button class="tab-btn active" onclick="showArtistTab('basic')">Dados Básicos</button>
-                        <button class="tab-btn" onclick="showArtistTab('work')">Trabalho</button>
-                        <button class="tab-btn" onclick="showArtistTab('schedule')">Agenda</button>
-                        <button class="tab-btn" onclick="showArtistTab('portfolio')">Portfólio</button>
-                    </div>
-                    
-                    <div id="basicTab" class="tab-content active">
-                        <form id="artistForm">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Nome Completo *</label>
-                                    <input type="text" id="artistName" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Status</label>
-                                    <select id="artistStatus">
-                                        <option value="ativo">Ativo</option>
-                                        <option value="ferias">Férias</option>
-                                        <option value="afastado">Afastado</option>
-                                        <option value="inativo">Inativo</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Telefone</label>
-                                    <input type="tel" id="artistPhone">
-                                </div>
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="email" id="artistEmail">
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Anos de Experiência</label>
-                                    <input type="number" id="artistExperience" min="0">
-                                </div>
-                                <div class="form-group">
-                                    <label>Instagram</label>
-                                    <input type="text" id="artistInstagram" placeholder="@usuario">
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Especialidades</label>
-                                <div class="checkbox-group">
-                                    <label><input type="checkbox" value="realismo"> Realismo</label>
-                                    <label><input type="checkbox" value="tradicional"> Tradicional</label>
-                                    <label><input type="checkbox" value="geometrico"> Geométrico</label>
-                                    <label><input type="checkbox" value="aquarela"> Aquarela</label>
-                                    <label><input type="checkbox" value="minimalista"> Minimalista</label>
-                                    <label><input type="checkbox" value="cover-up"> Cover-up</label>
-                                    <label><input type="checkbox" value="fine-line"> Fine Line</label>
-                                    <label><input type="checkbox" value="blackwork"> Blackwork</label>
-                                    <label><input type="checkbox" value="old-school"> Old School</label>
-                                    <label><input type="checkbox" value="neo-tradicional"> Neo Tradicional</label>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Bio/Descrição</label>
-                                <textarea id="artistBio" placeholder="Descrição para o site..."></textarea>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <div id="workTab" class="tab-content">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Comissão (%)</label>
-                                <input type="number" id="artistCommission" min="0" max="100">
-                            </div>
-                            <div class="form-group">
-                                <label>Tempo Padrão por Sessão (horas)</label>
-                                <input type="number" id="artistSessionTime" min="1" max="8">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Preços Base (R$)</label>
-                            <div class="price-grid">
-                                <div class="price-item">
-                                    <label>Pequena</label>
-                                    <input type="number" id="priceSmall" placeholder="150">
-                                </div>
-                                <div class="price-item">
-                                    <label>Média</label>
-                                    <input type="number" id="priceMedium" placeholder="300">
-                                </div>
-                                <div class="price-item">
-                                    <label>Grande</label>
-                                    <input type="number" id="priceLarge" placeholder="500">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Mesa/Estação</label>
-                            <select id="artistStation">
-                                <option value="1">Mesa 1</option>
-                                <option value="2">Mesa 2</option>
-                                <option value="3">Mesa 3</option>
-                                <option value="4">Mesa 4</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div id="scheduleTab" class="tab-content">
-                        <div class="form-group">
-                            <label>Horário de Trabalho</label>
-                            <div class="schedule-grid">
-                                <div class="schedule-day">
-                                    <label><input type="checkbox" value="monday"> Segunda</label>
-                                    <input type="time" placeholder="09:00">
-                                    <span>-</span>
-                                    <input type="time" placeholder="18:00">
-                                </div>
-                                <div class="schedule-day">
-                                    <label><input type="checkbox" value="tuesday"> Terça</label>
-                                    <input type="time" placeholder="09:00">
-                                    <span>-</span>
-                                    <input type="time" placeholder="18:00">
-                                </div>
-                                <div class="schedule-day">
-                                    <label><input type="checkbox" value="wednesday"> Quarta</label>
-                                    <input type="time" placeholder="09:00">
-                                    <span>-</span>
-                                    <input type="time" placeholder="18:00">
-                                </div>
-                                <div class="schedule-day">
-                                    <label><input type="checkbox" value="thursday"> Quinta</label>
-                                    <input type="time" placeholder="09:00">
-                                    <span>-</span>
-                                    <input type="time" placeholder="18:00">
-                                </div>
-                                <div class="schedule-day">
-                                    <label><input type="checkbox" value="friday"> Sexta</label>
-                                    <input type="time" placeholder="09:00">
-                                    <span>-</span>
-                                    <input type="time" placeholder="18:00">
-                                </div>
-                                <div class="schedule-day">
-                                    <label><input type="checkbox" value="saturday"> Sábado</label>
-                                    <input type="time" placeholder="09:00">
-                                    <span>-</span>
-                                    <input type="time" placeholder="16:00">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Capacidade Máxima Diária</label>
-                                <input type="number" id="artistMaxDaily" min="1" max="10">
-                            </div>
-                            <div class="form-group">
-                                <label>Tempo Mínimo Entre Sessões (min)</label>
-                                <input type="number" id="artistBreakTime" min="15" max="120">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="portfolioTab" class="tab-content">
-                        <div class="portfolio-upload">
-                            <label>Upload de Imagens</label>
-                            <input type="file" id="portfolioImages" multiple accept="image/*">
-                            <div class="upload-preview" id="uploadPreview"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="modal-footer">
-                    <button type="button" class="btn-secondary" onclick="closeArtistModal()">Cancelar</button>
-                    <button type="button" class="btn-primary" onclick="saveArtist()">Salvar Artista</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Modal de Perfil do Artista -->
-        <div id="artistProfileModal" class="modal">
-            <div class="modal-content artist-profile-modal">
-                <div class="modal-header">
-                    <div class="artist-profile-header">
-                        <div class="artist-avatar">
-                            <i class="fas fa-palette"></i>
-                        </div>
-                        <div class="artist-info">
-                            <h3 id="profileArtistName">Nome do Artista</h3>
-                            <span class="artist-status-badge" id="profileArtistStatus">Status</span>
-                        </div>
-                    </div>
-                    <button class="close-btn" onclick="closeArtistProfileModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <div class="modal-body">
-                    <div class="profile-actions">
-                        <button class="action-btn primary" onclick="viewArtistSchedule()">
-                            <i class="fas fa-calendar"></i> Agenda
-                        </button>
-                        <button class="action-btn success" onclick="addArtistBreak()">
-                            <i class="fas fa-pause"></i> Folga
-                        </button>
-                        <button class="action-btn info" onclick="editArtist()">
-                            <i class="fas fa-edit"></i> Editar
-                        </button>
-                        <button class="action-btn warning" onclick="viewArtistCommissions()">
-                            <i class="fas fa-dollar-sign"></i> Comissões
-                        </button>
-                    </div>
-                    
-                    <div class="profile-content">
-                        <div class="profile-section">
-                            <h4>Estatísticas do Mês</h4>
-                            <div class="stats-grid-small">
-                                <div class="stat-card-small">
-                                    <span class="stat-number" id="profileTotalTattoos">0</span>
-                                    <span class="stat-label">Tatuagens</span>
-                                </div>
-                                <div class="stat-card-small">
-                                    <span class="stat-number" id="profileTotalHours">0h</span>
-                                    <span class="stat-label">Horas</span>
-                                </div>
-                                <div class="stat-card-small">
-                                    <span class="stat-number" id="profileRevenue">R$ 0</span>
-                                    <span class="stat-label">Faturamento</span>
-                                </div>
-                                <div class="stat-card-small">
-                                    <span class="stat-number" id="profileRating">0.0</span>
-                                    <span class="stat-label">Avaliação</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="profile-section">
-                            <h4>Próximos Agendamentos</h4>
-                            <div id="profileUpcomingAppointments">
-                                <!-- Agendamentos serão carregados aqui -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Modal de Perfil do Cliente -->
-        <div id="clientProfileModal" class="modal">
-            <div class="modal-content client-profile-modal">
-                <div class="modal-header">
-                    <div class="client-profile-header">
-                        <div class="client-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="client-info">
-                            <h3 id="profileClientName">Nome do Cliente</h3>
-                            <span class="client-status-badge" id="profileClientStatus">Status</span>
-                        </div>
-                    </div>
-                    <button class="close-btn" onclick="closeClientProfileModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <div class="modal-body">
-                    <div class="profile-actions">
-                        <button class="action-btn primary" onclick="scheduleAppointment()">
-                            <i class="fas fa-calendar-plus"></i> Agendar
-                        </button>
-                        <button class="action-btn success" onclick="sendWhatsApp()">
-                            <i class="fab fa-whatsapp"></i> WhatsApp
-                        </button>
-                        <button class="action-btn info" onclick="editClient()">
-                            <i class="fas fa-edit"></i> Editar
-                        </button>
-                        <button class="action-btn warning" onclick="addPayment()">
-                            <i class="fas fa-dollar-sign"></i> Pagamento
-                        </button>
-                    </div>
-                    
-                    <div class="profile-content">
-                        <div class="profile-section">
-                            <h4>Informações de Contato</h4>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <span class="info-label">Telefone:</span>
-                                    <span class="info-value" id="profilePhone">-</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Email:</span>
-                                    <span class="info-value" id="profileEmail">-</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Instagram:</span>
-                                    <span class="info-value" id="profileInstagram">-</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="profile-section">
-                            <h4>Estatísticas</h4>
-                            <div class="stats-grid-small">
-                                <div class="stat-card-small">
-                                    <span class="stat-number" id="profileTotalTattoos">0</span>
-                                    <span class="stat-label">Tatuagens</span>
-                                </div>
-                                <div class="stat-card-small">
-                                    <span class="stat-number" id="profileTotalSpent">R$ 0</span>
-                                    <span class="stat-label">Total Gasto</span>
-                                </div>
-                                <div class="stat-card-small">
-                                    <span class="stat-number" id="profileLastVisit">-</span>
-                                    <span class="stat-label">Última Visita</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="profile-section">
-                            <h4>Histórico Recente</h4>
-                            <div id="profileRecentHistory">
-                                <!-- Histórico será carregado aqui -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Mais seções... -->
     </main>
 
-    <script src="../assets/js/api.js"></script>
-    <script src="../assets/js/appointment-sync.js"></script>
-    <script src="../assets/js/bidirectional-sync.js"></script>
-    <script src="../assets/js/admin-modules.js"></script>
-    <script src="../assets/js/admin-dashboard.js"></script>
-    <script src="../assets/js/client-management.js"></script>
-    <script src="../assets/js/artist-management.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="../assets/js/supabase-agendamento.js"></script>
     <script>
-        // Fallback para carregar agendamentos do localStorage
-        function loadLocalAppointments() {
-            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
-            const tbody = document.getElementById('appointmentsTableBody');
-            
-            if (appointments.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #666;">Nenhum agendamento encontrado</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = appointments.map(app => `
-                <tr>
-                    <td>${app.id}</td>
-                    <td>${app.clientName || app.nome_cliente}</td>
-                    <td>${app.phone || app.telefone}</td>
-                    <td>${app.service || app.servico}</td>
-                    <td>${new Date(app.date || app.data_agendamento).toLocaleDateString('pt-BR')} ${app.time || app.horario}</td>
-                    <td>${app.artist || app.artista}</td>
-                    <td><span class="status-badge status-${app.status || 'pendente'}">${(app.status || 'pendente').charAt(0).toUpperCase() + (app.status || 'pendente').slice(1)}</span></td>
-                    <td>R$ ${app.price || app.preco || '0'}</td>
-                    <td>
-                        <button class="btn-sm btn-success" onclick="updateAppointmentStatus(${app.id}, 'confirmado')">Confirmar</button>
-                        <button class="btn-sm btn-danger" onclick="updateAppointmentStatus(${app.id}, 'cancelado')">Cancelar</button>
-                    </td>
-                </tr>
-            `).join('');
-            
-            // Atualizar estatísticas
-            document.getElementById('totalAppointments').textContent = appointments.length;
-            document.getElementById('pendingAppointments').textContent = appointments.filter(a => (a.status || 'pendente') === 'pendente').length;
+        // Verificar se é admin
+        const adminData = JSON.parse(localStorage.getItem('adminLoginData') || '{}');
+        if (!adminData.isAdmin) {
+            alert('Acesso negado!');
+            window.location.href = 'login.html';
         }
-        
-        // Carregar agendamentos quando a página carregar
-        document.addEventListener('DOMContentLoaded', function() {
-            loadLocalAppointments();
-        });
+
+        async function carregarDados() {
+            try {
+                // Carregar agendamentos
+                const agendamentos = await window.supabaseAgendamento.listarAgendamentos();
+                document.getElementById('total-agendamentos').textContent = agendamentos.data.length;
+                
+                // Agendamentos hoje
+                const hoje = new Date().toISOString().split('T')[0];
+                const agendamentosHoje = agendamentos.data.filter(a => a.data_agendamento === hoje);
+                document.getElementById('agendamentos-hoje').textContent = agendamentosHoje.length;
+                
+                // Mostrar agendamentos
+                const agendamentosList = document.getElementById('agendamentos-list');
+                agendamentosList.innerHTML = agendamentos.data.slice(0, 5).map(a => `
+                    <div style="padding: 1rem; border-bottom: 1px solid #333;">
+                        <strong>${a.nome_cliente}</strong> - ${a.servico}<br>
+                        <small>${a.data_agendamento} às ${a.horario} | ${a.status}</small>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('adminLoginData');
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'login.html';
+        }
+
+        // Carregar dados ao iniciar
+        carregarDados();
     </script>
 </body>
 </html>

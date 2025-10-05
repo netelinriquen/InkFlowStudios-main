@@ -113,8 +113,68 @@ async function listarAgendamentos() {
     }
 }
 
+// Função para login
+async function fazerLogin(email, senha) {
+    if (!supabaseClient) {
+        throw new Error('❌ Supabase não inicializado.');
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('usuarios')
+            .select('*')
+            .eq('email', email)
+            .eq('senha', senha)
+            .single();
+
+        if (error) {
+            throw new Error('❌ Email ou senha incorretos.');
+        }
+
+        console.log('✅ Login realizado:', data);
+        return { success: true, user: data };
+    } catch (error) {
+        console.error('❌ Erro no login:', error);
+        throw error;
+    }
+}
+
+// Função para criar usuário
+async function criarUsuario(dadosUsuario) {
+    if (!supabaseClient) {
+        throw new Error('❌ Supabase não inicializado.');
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('usuarios')
+            .insert([{
+                nome: dadosUsuario.nome,
+                email: dadosUsuario.email,
+                senha: dadosUsuario.senha,
+                tipo: dadosUsuario.tipo || 'cliente'
+            }])
+            .select();
+
+        if (error) {
+            if (error.code === '23505') {
+                throw new Error('❌ Email já cadastrado.');
+            }
+            throw new Error(`❌ Erro: ${error.message}`);
+        }
+
+        console.log('✅ Usuário criado:', data);
+        return { success: true, user: data[0] };
+    } catch (error) {
+        console.error('❌ Erro ao criar usuário:', error);
+        throw error;
+    }
+}
+
 // Exportar funções
 window.supabaseAgendamento = {
     criarAgendamento,
-    listarAgendamentos
+    listarAgendamentos,
+    fazerLogin,
+    criarUsuario
 };

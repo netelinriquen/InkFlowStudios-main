@@ -216,7 +216,8 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="../assets/js/supabase-agendamento.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script>
 
@@ -272,22 +273,8 @@
             
             try {
                 // Tentar login no servidor SQL
-                // Usar Supabase diretamente
-                const { createClient } = supabase;
-                const supabaseClient = createClient(
-                    'https://tvccuvzcmnrqtrakudju.supabase.co',
-                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
-                );
-                
-                const { data, error } = await supabaseClient
-                    .from('usuarios')
-                    .select('id, nome, email, criado_em')
-                    .eq('email', email)
-                    .eq('senha', password);
-                
-                if (error) throw error;
-                
-                const result = data.length > 0 ? { success: true, user: data[0] } : { success: false, message: 'Email ou senha inválidos' };
+                // Usar função do Supabase
+                const result = await window.supabaseAgendamento.fazerLogin(email, password);
                 
                 if (result.success) {
                     // Login bem-sucedido
@@ -396,25 +383,18 @@
             
             try {
                 // Tentar criar usuário no servidor SQL
-                // Usar Supabase diretamente
-                const { createClient } = supabase;
-                const supabaseClient = createClient(
-                    'https://tvccuvzcmnrqtrakudju.supabase.co',
-                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
-                );
+                // Usar função do Supabase
+                const result = await window.supabaseAgendamento.criarUsuario({
+                    nome: name,
+                    email: email,
+                    senha: password,
+                    tipo: 'cliente'
+                });
                 
-                const { data, error } = await supabaseClient
-                    .from('usuarios')
-                    .insert([{ nome: name, email, senha: password, tipo: 'cliente' }]);
-                
-                if (!error) {
-                    alert('Cadastro realizado com sucesso!');
-                    document.getElementById('register-form').reset();
-                    switchTab('login');
-                    document.getElementById('login-email').value = email;
-                } else {
-                    alert(error.message || 'Erro ao criar conta');
-                }
+                alert('Cadastro realizado com sucesso!');
+                document.getElementById('register-form').reset();
+                switchTab('login');
+                document.getElementById('login-email').value = email;
             } catch (error) {
                 console.error('Erro no cadastro:', error);
                 // Fallback para localStorage
@@ -450,30 +430,17 @@
             const password = document.getElementById('admin-password').value;
             
             try {
-                const { createClient } = supabase;
-                const supabaseClient = createClient(
-                    'https://tvccuvzcmnrqtrakudju.supabase.co',
-                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
-                );
+                // Tentar login como admin
+                const result = await window.supabaseAgendamento.fazerLogin(email, password);
                 
-                const { data, error } = await supabaseClient
-                    .from('usuarios')
-                    .select('id, nome, email, tipo')
-                    .eq('email', email)
-                    .eq('senha', password)
-                    .eq('tipo', 'admin');
-                
-                if (error) throw error;
-                
-                if (data.length > 0) {
-                    const adminUser = data[0];
+                if (result.user.tipo === 'admin') {
                     const adminData = {
                         isLoggedIn: true,
                         isAdmin: true,
                         user: {
-                            id: adminUser.id,
-                            email: adminUser.email,
-                            name: adminUser.nome,
+                            id: result.user.id,
+                            email: result.user.email,
+                            name: result.user.nome,
                             role: 'admin'
                         },
                         loginTime: new Date().toISOString()
@@ -487,7 +454,7 @@
                         window.location.href = 'admin-dashboard.html';
                     }, 1000);
                 } else {
-                    alert('Credenciais de administrador inválidas!');
+                    alert('Esta conta não tem permissões de administrador!');
                 }
             } catch (error) {
                 // Fallback para credenciais hardcoded
