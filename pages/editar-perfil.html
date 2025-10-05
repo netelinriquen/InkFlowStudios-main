@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil - Ink Flow</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .edit-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        
+        .edit-card {
+            background: var(--secondary-dark);
+            border-radius: 15px;
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn-save {
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .btn-save:hover {
+            background: #c82333;
+        }
+        
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../index.html" class="logo">INK FLOW</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="sobre.html">Sobre Nós</a></li>
+                <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="servicos.html">Serviços</a></li>
+                <li><a href="agendamento.html">Agendamento</a></li>
+                <li><a href="contato.html">Contato</a></li>
+            </ul>
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="edit-container">
+            <div class="edit-card">
+                <h1 style="text-align: center; color: var(--accent-red); margin-bottom: 2rem;">
+                    Editar Perfil
+                </h1>
+                
+                <form id="edit-form">
+                    <div class="form-group">
+                        <label for="edit-name">Nome Completo</label>
+                        <input type="text" id="edit-name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-email">Email</label>
+                        <input type="email" id="edit-email" name="email" required readonly style="background: #333; color: #999;">
+                        <small style="color: #999;">Email não pode ser alterado</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-password">Nova Senha (deixe em branco para manter atual)</label>
+                        <input type="password" id="edit-password" name="password" minlength="6">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-confirm">Confirmar Nova Senha</label>
+                        <input type="password" id="edit-confirm" name="confirm-password">
+                    </div>
+                    
+                    <button type="submit" class="btn-save">
+                        💾 Salvar Alterações
+                    </button>
+                    
+                    <button type="button" class="btn-cancel" onclick="window.location.href='perfil.html'">
+                        ❌ Cancelar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        // Carregar dados atuais do usuário
+        function loadCurrentData() {
+            if (!window.authSystem || !window.authSystem.isLoggedIn()) {
+                alert('Você precisa fazer login para editar o perfil.');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const user = window.authSystem.getCurrentUser();
+            if (!user) {
+                alert('Erro ao carregar dados do usuário.');
+                return;
+            }
+            
+            // Preencher formulário com dados atuais
+            document.getElementById('edit-name').value = user.nome || user.name || '';
+            document.getElementById('edit-email').value = user.email || '';
+        }
+        
+        // Função UPDATE - Atualizar perfil
+        document.getElementById('edit-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const user = window.authSystem.getCurrentUser();
+            if (!user) {
+                alert('Erro ao obter dados do usuário.');
+                return;
+            }
+            
+            const name = document.getElementById('edit-name').value;
+            const password = document.getElementById('edit-password').value;
+            const confirmPassword = document.getElementById('edit-confirm').value;
+            
+            // Validações
+            if (!name.trim()) {
+                alert('Nome é obrigatório.');
+                return;
+            }
+            
+            if (password && password !== confirmPassword) {
+                alert('As senhas não coincidem!');
+                return;
+            }
+            
+            if (password && password.length < 6) {
+                alert('A senha deve ter pelo menos 6 caracteres.');
+                return;
+            }
+            
+            try {
+                // Conectar ao Supabase
+                const { createClient } = supabase;
+                const supabaseClient = createClient(
+                    'https://tvccuvzcmnrqtrakudju.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
+                );
+                
+                // Preparar dados para atualizar
+                const updateData = { nome: name };
+                if (password) {
+                    updateData.senha = password;
+                }
+                
+                // COMANDO UPDATE - Atualizar usuário no banco
+                const { data, error } = await supabaseClient
+                    .from('usuarios')
+                    .update(updateData)
+                    .eq('email', user.email);
+                
+                if (error) throw error;
+                
+                alert('Perfil atualizado com sucesso!');
+                
+                // Atualizar dados no localStorage
+                const updatedUser = { ...user, nome: name };
+                if (password) updatedUser.senha = password;
+                
+                const loginData = JSON.parse(localStorage.getItem('loginData') || '{}');
+                if (loginData.user) {
+                    loginData.user = updatedUser;
+                    localStorage.setItem('loginData', JSON.stringify(loginData));
+                }
+                
+                // Voltar para perfil
+                window.location.href = 'perfil.html';
+                
+            } catch (error) {
+                alert('Erro ao atualizar perfil: ' + error.message);
+            }
+        });
+        
+        // Carregar dados quando a página carregar
+        document.addEventListener('DOMContentLoaded', loadCurrentData);
+    </script>
+</body>
+</html>
