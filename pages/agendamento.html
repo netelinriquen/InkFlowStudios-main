@@ -468,11 +468,7 @@
                 console.log('📝 Resultado:', result);
                 
                 if (result.success) {
-                    const mensagem = result.fallback ? 
-                        '✅ Agendamento salvo! (Sistema offline - dados salvos localmente)' :
-                        '✅ Agendamento enviado com sucesso! Entraremos em contato em até 24 horas.';
-                    
-                    alert(mensagem);
+                    alert('✅ Agendamento enviado com sucesso para o Supabase! Entraremos em contato em até 24 horas.');
                     this.reset();
                     
                     // Limpar seleções do calendário
@@ -482,12 +478,28 @@
                     document.getElementById('selection-summary').style.display = 'none';
                     
                     window.location.href = 'obrigado.html';
-                } else {
-                    throw new Error(result.error || 'Erro desconhecido ao salvar agendamento');
                 }
             }).catch(error => {
                 console.error('❌ Erro ao enviar agendamento:', error);
-                alert('❌ Erro ao enviar agendamento: ' + error.message + '. Tente novamente.');
+                
+                let mensagemErro = '❌ Erro ao enviar agendamento:\n\n';
+                
+                if (error.message.includes('Tabela')) {
+                    mensagemErro += '⚠️ A tabela não existe no Supabase.\n';
+                    mensagemErro += 'Execute o arquivo "criar-tabela-supabase.sql" no SQL Editor do Supabase.';
+                } else if (error.message.includes('permissão')) {
+                    mensagemErro += '⚠️ Sem permissão para inserir dados.\n';
+                    mensagemErro += 'Configure as políticas RLS no Supabase.';
+                } else if (error.message.includes('Chave de API')) {
+                    mensagemErro += '⚠️ Chave de API inválida.\n';
+                    mensagemErro += 'Verifique SUPABASE_ANON_KEY no arquivo supabase-agendamento.js';
+                } else {
+                    mensagemErro += error.message;
+                }
+                
+                mensagemErro += '\n\nConsulte o arquivo "VERIFICAR-SUPABASE.md" para soluções.';
+                
+                alert(mensagemErro);
             });
         });
         

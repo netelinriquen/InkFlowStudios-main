@@ -21,8 +21,7 @@ async function criarAgendamento(dadosAgendamento) {
     
     // Verificar se Supabase está disponível
     if (!supabaseClient) {
-        console.warn('⚠️ Supabase não disponível, usando localStorage');
-        return salvarNoLocalStorage(dadosAgendamento);
+        throw new Error('❌ Supabase não inicializado. Verifique se a biblioteca foi carregada.');
     }
     
     try {
@@ -52,16 +51,26 @@ async function criarAgendamento(dadosAgendamento) {
 
         if (error) {
             console.error('❌ Erro do Supabase:', error);
-            console.warn('🔄 Tentando localStorage como fallback');
-            return salvarNoLocalStorage(dadosAgendamento);
+            
+            // Erros específicos
+            if (error.code === '42P01') {
+                throw new Error('❌ Tabela "agendamentos" não existe. Execute o SQL no Supabase.');
+            }
+            if (error.code === '42501') {
+                throw new Error('❌ Sem permissão. Configure as políticas RLS no Supabase.');
+            }
+            if (error.message.includes('JWT')) {
+                throw new Error('❌ Chave de API inválida. Verifique SUPABASE_ANON_KEY.');
+            }
+            
+            throw new Error(`❌ Erro do Supabase: ${error.message}`);
         }
 
         console.log('✅ Agendamento criado no Supabase:', data);
         return { success: true, data };
     } catch (error) {
         console.error('❌ Erro ao criar agendamento:', error);
-        console.warn('🔄 Usando localStorage como fallback');
-        return salvarNoLocalStorage(dadosAgendamento);
+        throw error; // Re-throw para mostrar erro específico
     }
 }
 
@@ -87,6 +96,10 @@ function salvarNoLocalStorage(dadosAgendamento) {
 
 // Função para listar agendamentos
 async function listarAgendamentos() {
+    if (!supabaseClient) {
+        throw new Error('❌ Supabase não inicializado.');
+    }
+    
     try {
         const { data, error } = await supabaseClient
             .from('agendamentos')
@@ -95,17 +108,13 @@ async function listarAgendamentos() {
 
         if (error) {
             console.error('Erro do Supabase ao listar:', error);
-            // Fallback para localStorage
-            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
-            return { success: true, data: appointments, fallback: true };
+            throw new Error(`❌ Erro ao listar: ${error.message}`);
         }
         
         return { success: true, data };
     } catch (error) {
         console.error('Erro ao listar agendamentos:', error);
-        // Fallback para localStorage
-        const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
-        return { success: true, data: appointments, fallback: true };
+        throw error;
     }
 }
 
