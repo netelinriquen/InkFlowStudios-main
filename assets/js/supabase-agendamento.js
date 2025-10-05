@@ -203,11 +203,37 @@ async function criarCliente(dadosCliente) {
     }
 }
 
+// Função para alterar status de agendamento
+async function alterarStatusAgendamento(id, novoStatus) {
+    if (!supabaseClient) {
+        throw new Error('❌ Supabase não inicializado.');
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('agendamentos')
+            .update({ status: novoStatus })
+            .eq('id', id)
+            .select();
+
+        if (error) {
+            throw new Error(`❌ Erro ao alterar status: ${error.message}`);
+        }
+
+        console.log('✅ Status alterado:', data);
+        return { success: true, data };
+    } catch (error) {
+        console.error('❌ Erro ao alterar status:', error);
+        throw error;
+    }
+}
+
 // Exportar funções
 window.supabaseAgendamento = {
     criarAgendamento,
     listarAgendamentos,
     fazerLogin,
     fazerLoginAdmin,
-    criarCliente
+    criarCliente,
+    alterarStatusAgendamento
 };
