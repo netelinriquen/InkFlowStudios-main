@@ -1,0 +1,13 @@
+{
+  "name": "inkflowstudios",
+  "version": "1.0.0",
+  "description": "Sistema de gerenciamento para estúdio de tatuagem",
+  "main": "test-server.js",
+  "scripts": {
+    "start": "node test-server.js",
+    "dev": "node test-server.js"
+  },
+  "dependencies": {
+    "mssql": "^10.0.1"
+  }
+}

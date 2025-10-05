@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realismo - Ink Flow Estúdio de Tatuagem</title>
+    <meta name="description" content="Trabalhos em realismo do Ink Flow. Retratos e tatuagens hiper-realistas em São Paulo.">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../index.html" class="logo">INK FLOW</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="sobre.html">Sobre Nós</a></li>
+                <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="servicos.html">Serviços</a></li>
+                <li><a href="#" onclick="checkLoginForBooking()">Agendamento</a></li>
+                <li><a href="contato.html">Contato</a></li>
+                <li id="meus-agendamentos-link" style="display: none;"><a href="meus-agendamentos.html">Meus Agendamentos</a></li>
+            </ul>
+            <a href="login.html" style="color: var(--text-light); text-decoration: none; padding: 0.5rem 1rem; border: 1px solid var(--accent-red); border-radius: 4px; transition: all 0.3s ease;">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="section">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <a href="portfolio.html" style="color: var(--accent-red); text-decoration: none; font-size: 0.9rem;">← Voltar ao Portfólio</a>
+            </div>
+            
+            <h2>Trabalhos em Realismo</h2>
+            <p style="text-align: center; color: var(--text-gray); margin-bottom: 3rem; max-width: 700px; margin-left: auto; margin-right: auto;">
+                Especialidade em retratos e tatuagens hiper-realistas com técnicas avançadas de sombreamento e detalhamento fotográfico.
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+                <div style="background: var(--secondary-dark); border: 1px solid #333; border-radius: 8px; padding: 2rem;">
+                    <img src="../assets/images/messi-tattoo.jpg" alt="Retrato Realista" style="width: 100%; height: 350px; object-fit: cover; object-position: center top; border-radius: 5px; margin-bottom: 1.5rem;">
+                    <h3 style="color: var(--accent-red); margin-bottom: 1rem;">Retrato Realista</h3>
+                    <p style="color: var(--text-gray); margin-bottom: 1rem; line-height: 1.6;">Trabalho em realismo fotográfico com técnicas avançadas de sombreamento e detalhamento preciso.</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <p style="color: var(--text-white); font-size: 0.9rem; margin: 0;"><strong>Artista:</strong> Marcus Silva</p>
+                        <p style="color: var(--accent-red); font-size: 0.9rem; margin: 0;"><strong>Tempo:</strong> 6 horas</p>
+                    </div>
+                </div>
+                
+                <div style="background: var(--secondary-dark); border: 1px solid #333; border-radius: 8px; padding: 2rem;">
+                    <img src="../assets/images/watercolor-tattoo.jpg" alt="Aquarela Realista" style="width: 100%; height: 400px; object-fit: cover; border-radius: 5px; margin-bottom: 1.5rem;">
+                    <h3 style="color: var(--accent-red); margin-bottom: 1rem;">Aquarela Realista</h3>
+                    <p style="color: var(--text-gray); margin-bottom: 1rem; line-height: 1.6;">Combinação única de realismo com técnica aquarela, criando efeitos de cor e textura únicos.</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <p style="color: var(--text-white); font-size: 0.9rem; margin: 0;"><strong>Artista:</strong> Marcus Silva</p>
+                        <p style="color: var(--accent-red); font-size: 0.9rem; margin: 0;"><strong>Tempo:</strong> 4 horas</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section style="text-align: center; background-color: var(--secondary-dark); margin: 0 auto; padding: 4rem 2rem; max-width: 800px; width: 100%;">
+            <h2>Interessado em Realismo?</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem; color: var(--text-gray); max-width: 600px; margin-left: auto; margin-right: auto;">
+                Agende uma consulta com Marcus Silva e desenvolva seu projeto de tatuagem realista personalizado
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="#" onclick="checkLoginForBooking()" class="btn" style="font-size: 1.1rem; padding: 15px 30px;">Agendar com Marcus</a>
+                <a href="portfolio.html" class="btn btn-outline" style="font-size: 1.1rem; padding: 15px 30px;">Ver Outros Estilos</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem;">
+            <a href="https://www.instagram.com/inkflowstudios" target="_blank" style="color: var(--text-gray); text-decoration: none; padding: 0.5rem; border: 1px solid #333; border-radius: 4px; transition: all 0.3s ease;" aria-label="Instagram">Instagram</a>
+            <a href="https://www.tiktok.com/@inkflowstudios" target="_blank" style="color: var(--text-gray); text-decoration: none; padding: 0.5rem; border: 1px solid #333; border-radius: 4px; transition: all 0.3s ease;" aria-label="TikTok">TikTok</a>
+            <a href="https://wa.me/15144373894" target="_blank" style="color: var(--text-gray); text-decoration: none; padding: 0.5rem; border: 1px solid #333; border-radius: 4px; transition: all 0.3s ease;" aria-label="WhatsApp">WhatsApp</a>
+            <a href="mailto:inkflowstudios07@gmail.com" target="_blank" style="color: var(--text-gray); text-decoration: none; padding: 0.5rem; border: 1px solid #333; border-radius: 4px; transition: all 0.3s ease;" aria-label="Email">Email</a>
+        </div>
+        <div style="text-align: center; color: var(--text-gray); font-size: 0.9rem;">
+            <p>&copy; 2024 Ink Flow Estúdio de Tatuagem Ltda. Todos os direitos reservados.</p>
+            <p>São Paulo, SP - Brasil | CNPJ: 00.000.000/0001-00</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/script.js"></script>
+    <script>
+        // Atualizar navegação baseada no status de login
+        if (window.authSystem) {
+            window.authSystem.updateNavigation();
+        }
+    </script>
+</body>
+</html>

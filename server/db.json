@@ -1,0 +1,176 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Cliente Demo",
+      "email": "demo@inkflow.com",
+      "password": "123456",
+      "phone": "(11) 99999-9999",
+      "birth": "1990-01-01",
+      "role": "client",
+      "createdAt": "2025-01-27T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "name": "Admin InkFlow",
+      "email": "admin@inkflow.com",
+      "password": "admin123",
+      "phone": "(11) 98888-8888",
+      "birth": "1985-05-15",
+      "role": "admin",
+      "createdAt": "2025-01-27T09:00:00.000Z"
+    }
+  ],
+  "artists": [
+    {
+      "id": 1,
+      "name": "Marcus Silva",
+      "slug": "marcus",
+      "specialties": ["realismo", "blackwork", "tradicional"],
+      "experience": "8 anos",
+      "portfolio": [
+        "images/portfolio/messi-tattoo.jpg",
+        "images/portfolio/lobo geo.jpg"
+      ],
+      "available": true,
+      "bio": "Especialista em realismo e blackwork com mais de 8 anos de experiência."
+    },
+    {
+      "id": 2,
+      "name": "Ana Costa",
+      "slug": "ana",
+      "specialties": ["fineline", "aquarela", "geometrico"],
+      "experience": "5 anos",
+      "portfolio": [
+        "images/portfolio/fine line.avif",
+        "images/portfolio/mandala.jpg"
+      ],
+      "available": true,
+      "bio": "Artista especializada em fine line e técnicas delicadas."
+    }
+  ],
+  "services": [
+    {
+      "id": 1,
+      "name": "Tatuagem Artística",
+      "slug": "tatuagem-artistica",
+      "description": "Tatuagem personalizada com design único",
+      "basePrice": 200,
+      "pricePerHour": 150,
+      "estimatedTime": "2-4 horas",
+      "category": "artistica"
+    },
+    {
+      "id": 2,
+      "name": "Realismo",
+      "slug": "realismo",
+      "description": "Tatuagens realistas com alta definição",
+      "basePrice": 300,
+      "pricePerHour": 200,
+      "estimatedTime": "3-6 horas",
+      "category": "realismo"
+    },
+    {
+      "id": 3,
+      "name": "Fine Line",
+      "slug": "fineline",
+      "description": "Tatuagens delicadas com traços finos",
+      "basePrice": 150,
+      "pricePerHour": 120,
+      "estimatedTime": "1-3 horas",
+      "category": "fineline"
+    },
+    {
+      "id": 4,
+      "name": "Blackwork",
+      "slug": "blackwork",
+      "description": "Tatuagens em preto sólido",
+      "basePrice": 250,
+      "pricePerHour": 180,
+      "estimatedTime": "2-5 horas",
+      "category": "blackwork"
+    }
+  ],
+  "appointments": [
+    {
+      "id": 1,
+      "userId": 1,
+      "name": "Cliente Demo",
+      "phone": "(11) 99999-9999",
+      "age": 30,
+      "service": "tatuagem-artistica",
+      "artist": "marcus",
+      "size": "media",
+      "location": "braço",
+      "description": "Tatuagem de leão realista",
+      "budget": "600-1000",
+      "availability": "Segunda a sexta, manhã",
+      "firstTattoo": false,
+      "status": "pendente",
+      "scheduledDate": null,
+      "scheduledTime": null,
+      "estimatedPrice": 800,
+      "notes": "",
+      "createdAt": "2025-01-27T10:00:00.000Z",
+      "updatedAt": "2025-01-27T10:00:00.000Z"
+    }
+  ],
+  "portfolio": [
+    {
+      "id": 1,
+      "artistId": 1,
+      "title": "Leão Realista",
+      "category": "realismo",
+      "image": "images/portfolio/messi-tattoo.jpg",
+      "description": "Tatuagem realista de leão no braço",
+      "size": "grande",
+      "location": "braço",
+      "createdAt": "2025-01-20T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "artistId": 1,
+      "title": "Lobo Geométrico",
+      "category": "geometrico",
+      "image": "images/portfolio/lobo geo.jpg",
+      "description": "Combinação de realismo com elementos geométricos",
+      "size": "media",
+      "location": "antebraço",
+      "createdAt": "2025-01-18T10:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "artistId": 2,
+      "title": "Mandala Delicada",
+      "category": "fineline",
+      "image": "images/portfolio/mandala.jpg",
+      "description": "Mandala em fine line no pulso",
+      "size": "pequena",
+      "location": "pulso",
+      "createdAt": "2025-01-15T10:00:00.000Z"
+    }
+  ],
+  "settings": {
+    "studioInfo": {
+      "name": "Ink Flow Studio",
+      "address": "Rua das Artes, 123 - São Paulo, SP",
+      "phone": "(11) 3333-4444",
+      "email": "contato@inkflow.com",
+      "workingHours": {
+        "monday": "09:00-18:00",
+        "tuesday": "09:00-18:00",
+        "wednesday": "09:00-18:00",
+        "thursday": "09:00-18:00",
+        "friday": "09:00-18:00",
+        "saturday": "09:00-16:00",
+        "sunday": "closed"
+      }
+    },
+    "appointmentSettings": {
+      "maxAdvanceDays": 60,
+      "minAdvanceHours": 24,
+      "slotDuration": 60,
+      "bufferTime": 30
+    }
+  }
+}

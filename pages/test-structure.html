@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Estrutura Organizada</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">INK FLOW</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="pages/sobre.html">Sobre Nós</a></li>
+                <li><a href="pages/portfolio.html">Portfólio</a></li>
+                <li><a href="pages/servicos.html">Serviços</a></li>
+                <li><a href="pages/contato.html">Contato</a></li>
+                <li><a href="pages/login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="section">
+            <h2>✅ Estrutura Organizada com Sucesso!</h2>
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <h3 style="color: var(--accent-red); margin: 2rem 0;">Nova Organização:</h3>
+                <div style="text-align: left; background: var(--secondary-dark); padding: 2rem; border-radius: 8px; margin: 2rem 0;">
+                    <p><strong>📁 assets/</strong> - Recursos estáticos</p>
+                    <p style="margin-left: 2rem;">├── css/ - Arquivos de estilo</p>
+                    <p style="margin-left: 2rem;">├── js/ - Scripts JavaScript</p>
+                    <p style="margin-left: 2rem;">└── images/ - Imagens e ícones</p>
+                    <br>
+                    <p><strong>📁 pages/</strong> - Páginas HTML</p>
+                    <p style="margin-left: 2rem;">├── sobre.html</p>
+                    <p style="margin-left: 2rem;">├── portfolio.html</p>
+                    <p style="margin-left: 2rem;">├── servicos.html</p>
+                    <p style="margin-left: 2rem;">├── contato.html</p>
+                    <p style="margin-left: 2rem;">└── login.html</p>
+                    <br>
+                    <p><strong>📁 docs/</strong> - Documentação</p>
+                    <p><strong>📄 index.html</strong> - Página inicial (raiz)</p>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
+                    <a href="pages/sobre.html" class="btn">Testar Sobre</a>
+                    <a href="pages/portfolio.html" class="btn">Testar Portfólio</a>
+                    <a href="pages/servicos.html" class="btn">Testar Serviços</a>
+                    <a href="pages/contato.html" class="btn">Testar Contato</a>
+                    <a href="pages/login.html" class="btn">Testar Login</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div style="text-align: center; color: var(--text-gray); font-size: 0.9rem;">
+            <p>✅ Estrutura organizada e funcional!</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

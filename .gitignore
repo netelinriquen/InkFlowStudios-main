@@ -1,0 +1,4 @@
+whatsapp-bot/
+node_modules/
+*.log
+.env

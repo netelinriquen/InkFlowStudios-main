@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste do Servidor</title>
+</head>
+<body>
+    <h1>Teste de Conexão com o Servidor</h1>
+    <button onclick="testConnection()">Testar Conexão</button>
+    <div id="result"></div>
+
+    <script>
+        async function testConnection() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testando conexão...';
+            
+            try {
+                const response = await fetch('http://localhost:3000/users');
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `<p style="color: green;">✅ Servidor funcionando! Usuários encontrados: ${data.length}</p>`;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: red;">❌ Erro de conexão: ${error.message}</p><p>Certifique-se de que o servidor está rodando com: <code>node server.js</code></p>`;
+            }
+        }
+    </script>
+</body>
+</html>

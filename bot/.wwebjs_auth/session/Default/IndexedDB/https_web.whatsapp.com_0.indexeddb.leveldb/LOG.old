@@ -1,0 +1,15 @@
+2025/08/27-19:08:11.738 1028 Reusing MANIFEST C:\Users\DMJ\Downloads\InkFlowStudios\bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/08/27-19:08:11.738 1028 Recovering log #72
+2025/08/27-19:08:11.741 1028 Reusing old log C:\Users\DMJ\Downloads\InkFlowStudios\bot\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000072.log 
+2025/08/27-19:08:13.267 1028 Level-0 table #78: started
+2025/08/27-19:08:13.271 1028 Level-0 table #78: 38013 bytes OK
+2025/08/27-19:08:13.273 1028 Delete type=0 #72
+2025/08/27-19:08:13.274 1028 Manual compaction at level-0 from '\x00\x1f\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00 \x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/08/27-19:08:14.780 4508 Compacting 1@1 + 2@2 files
+2025/08/27-19:08:14.855 4508 Generated table #79@1: 47301 keys, 2224911 bytes
+2025/08/27-19:08:14.881 4508 Generated table #80@1: 17597 keys, 424941 bytes
+2025/08/27-19:08:14.881 4508 Compacted 1@1 + 2@2 files => 2649852 bytes
+2025/08/27-19:08:14.885 4508 compacted to: files[ 0 0 2 0 0 0 0 ]
+2025/08/27-19:08:14.885 4508 Delete type=2 #74
+2025/08/27-19:08:14.885 4508 Delete type=2 #75
+2025/08/27-19:08:14.885 4508 Delete type=2 #78
