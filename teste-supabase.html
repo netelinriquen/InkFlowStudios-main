@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Supabase</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #1a1a1a; color: white; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .btn { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .btn:hover { background: #0056b3; }
+        .result { margin: 20px 0; padding: 15px; background: #2a2a2a; border-radius: 5px; }
+        .error { background: #dc3545; }
+        .success { background: #28a745; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste de Conexão Supabase</h1>
+        
+        <button class="btn" onclick="testarConexao()">Testar Conexão</button>
+        <button class="btn" onclick="criarAgendamentoTeste()">Criar Agendamento Teste</button>
+        <button class="btn" onclick="listarAgendamentos()">Listar Agendamentos</button>
+        
+        <div id="resultado"></div>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-agendamento.js"></script>
+    <script>
+        function mostrarResultado(mensagem, tipo = 'result') {
+            const div = document.getElementById('resultado');
+            div.innerHTML = `<div class="result ${tipo}">${mensagem}</div>`;
+        }
+
+        async function testarConexao() {
+            try {
+                mostrarResultado('🔄 Testando conexão...', 'result');
+                
+                const { data, error } = await supabaseClient
+                    .from('agendamentos')
+                    .select('count', { count: 'exact' });
+                
+                if (error) {
+                    mostrarResultado(`❌ Erro: ${error.message}`, 'error');
+                } else {
+                    mostrarResultado(`✅ Conexão OK! Tabela tem ${data.length} registros`, 'success');
+                }
+            } catch (error) {
+                mostrarResultado(`❌ Erro de conexão: ${error.message}`, 'error');
+            }
+        }
+
+        async function criarAgendamentoTeste() {
+            const dadosTeste = {
+                clientName: 'Teste Cliente',
+                email: 'teste@email.com',
+                phone: '(11) 99999-9999',
+                age: '25',
+                service: 'Tatuagem Teste',
+                date: '2024-02-15',
+                time: '14:00',
+                artist: 'Artista Teste',
+                size: 'pequena',
+                location: 'braço',
+                description: 'Teste de agendamento',
+                budget: 'ate-300',
+                firstTattoo: false
+            };
+
+            mostrarResultado('🔄 Criando agendamento teste...', 'result');
+            
+            const resultado = await window.supabaseAgendamento.criarAgendamento(dadosTeste);
+            
+            if (resultado.success) {
+                const msg = resultado.fallback ? 
+                    '✅ Agendamento salvo no localStorage (Supabase offline)' : 
+                    '✅ Agendamento criado no Supabase!';
+                mostrarResultado(msg, 'success');
+            } else {
+                mostrarResultado(`❌ Erro: ${resultado.error}`, 'error');
+            }
+        }
+
+        async function listarAgendamentos() {
+            mostrarResultado('🔄 Listando agendamentos...', 'result');
+            
+            const resultado = await window.supabaseAgendamento.listarAgendamentos();
+            
+            if (resultado.success) {
+                const msg = resultado.fallback ? 
+                    `📋 ${resultado.data.length} agendamentos (localStorage)` : 
+                    `📋 ${resultado.data.length} agendamentos (Supabase)`;
+                mostrarResultado(msg + '<br><pre>' + JSON.stringify(resultado.data, null, 2) + '</pre>', 'success');
+            } else {
+                mostrarResultado(`❌ Erro: ${resultado.error}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

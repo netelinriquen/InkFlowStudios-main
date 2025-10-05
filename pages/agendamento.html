@@ -447,19 +447,47 @@
             
             console.log('Enviando agendamento:', appointmentData);
             
+            // Verificar se o sistema de agendamento está disponível
+            if (!window.supabaseAgendamento) {
+                console.error('❌ Sistema de agendamento não carregado');
+                alert('❌ Sistema de agendamento não disponível. Tente recarregar a página.');
+                return;
+            }
+            
+            // Validar campos obrigatórios
+            if (!appointmentData.date || !appointmentData.time) {
+                alert('⚠️ Por favor, selecione uma data e horário.');
+                return;
+            }
+            
+            console.log('📤 Enviando agendamento:', appointmentData);
+            
             // Enviar para Supabase
             window.supabaseAgendamento.criarAgendamento(appointmentData)
             .then(result => {
+                console.log('📝 Resultado:', result);
+                
                 if (result.success) {
-                    alert('✅ Agendamento enviado com sucesso! Entraremos em contato em até 24 horas.');
+                    const mensagem = result.fallback ? 
+                        '✅ Agendamento salvo! (Sistema offline - dados salvos localmente)' :
+                        '✅ Agendamento enviado com sucesso! Entraremos em contato em até 24 horas.';
+                    
+                    alert(mensagem);
                     this.reset();
+                    
+                    // Limpar seleções do calendário
+                    selectedDate = null;
+                    selectedTime = null;
+                    document.getElementById('time-slots').style.display = 'none';
+                    document.getElementById('selection-summary').style.display = 'none';
+                    
                     window.location.href = 'obrigado.html';
                 } else {
-                    throw new Error(result.error || 'Erro ao salvar agendamento');
+                    throw new Error(result.error || 'Erro desconhecido ao salvar agendamento');
                 }
             }).catch(error => {
-                console.error('Erro ao enviar agendamento:', error);
-                alert('❌ Erro ao enviar agendamento. Tente novamente.');
+                console.error('❌ Erro ao enviar agendamento:', error);
+                alert('❌ Erro ao enviar agendamento: ' + error.message + '. Tente novamente.');
             });
         });
         
