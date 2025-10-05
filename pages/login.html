@@ -272,9 +272,27 @@
             }
             
             try {
-                // Tentar login no servidor SQL
-                // Usar função do Supabase
-                const result = await window.supabaseAgendamento.fazerLogin(email, password);
+                // Login direto no Supabase
+                const { createClient } = supabase;
+                const supabaseClient = createClient(
+                    'https://tvccuvzcmnrqtrakudju.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
+                );
+                
+                const { data, error } = await supabaseClient
+                    .from('clientes')
+                    .select('*')
+                    .eq('email', email)
+                    .eq('senha', password)
+                    .single();
+                
+                let result;
+                if (error) {
+                    throw new Error('Email ou senha incorretos.');
+                } else {
+                    result = { success: true, user: data };
+                    console.log('✅ Login realizado:', data);
+                }
                 
                 if (result.success) {
                     // Login bem-sucedido
@@ -382,13 +400,31 @@
             }
             
             try {
-                // Tentar criar usuário no servidor SQL
-                // Usar função do Supabase
-                const result = await window.supabaseAgendamento.criarCliente({
-                    nome: name,
-                    email: email,
-                    senha: password
-                });
+                // Criar usuário diretamente no Supabase
+                const { createClient } = supabase;
+                const supabaseClient = createClient(
+                    'https://tvccuvzcmnrqtrakudju.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
+                );
+                
+                const { data, error } = await supabaseClient
+                    .from('clientes')
+                    .insert([{
+                        nome: name,
+                        email: email,
+                        senha: password,
+                        telefone: null
+                    }])
+                    .select();
+                
+                if (error) {
+                    if (error.code === '23505') {
+                        throw new Error('Este e-mail já está cadastrado!');
+                    }
+                    throw new Error(`Erro: ${error.message}`);
+                }
+                
+                console.log('✅ Cliente criado no Supabase:', data);
                 
                 alert('Cadastro realizado com sucesso!');
                 document.getElementById('register-form').reset();

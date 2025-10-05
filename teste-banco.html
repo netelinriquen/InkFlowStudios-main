@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Banco de Dados</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; background: #1a1a1a; color: white; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .test-section { background: #2a2a2a; padding: 1.5rem; margin: 1rem 0; border-radius: 8px; }
+        button { background: #dc3545; color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; margin: 0.5rem; }
+        button:hover { background: #c82333; }
+        .result { background: #1a1a1a; padding: 1rem; margin: 1rem 0; border-radius: 4px; font-family: monospace; }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Teste do Banco de Dados</h1>
+        
+        <div class="test-section">
+            <h3>1. Conexão Supabase</h3>
+            <button onclick="testarConexao()">Testar Conexão</button>
+            <div id="resultado-conexao" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Tabelas</h3>
+            <button onclick="verificarTabelas()">Verificar Tabelas</button>
+            <div id="resultado-tabelas" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Agendamentos</h3>
+            <button onclick="testarAgendamentos()">Listar Agendamentos</button>
+            <button onclick="criarAgendamentoTeste()">Criar Teste</button>
+            <div id="resultado-agendamentos" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Usuários/Clientes</h3>
+            <button onclick="testarUsuarios()">Verificar Usuários</button>
+            <div id="resultado-usuarios" class="result"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-agendamento.js"></script>
+    <script>
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            element.innerHTML += `<div class="${className}">${new Date().toLocaleTimeString()}: ${message}</div>`;
+        }
+
+        async function testarConexao() {
+            const resultId = 'resultado-conexao';
+            document.getElementById(resultId).innerHTML = '';
+            log(resultId, '🔄 Testando conexão...', 'info');
+
+            try {
+                const { createClient } = supabase;
+                const client = createClient(
+                    'https://tvccuvzcmnrqtrakudju.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
+                );
+
+                // Teste simples de conexão
+                const { data, error } = await client.from('agendamentos').select('count', { count: 'exact', head: true });
+                
+                if (error) {
+                    log(resultId, `❌ Erro: ${error.message}`, 'error');
+                    if (error.code === '42P01') {
+                        log(resultId, '💡 Tabela "agendamentos" não existe', 'info');
+                    }
+                } else {
+                    log(resultId, '✅ Conexão OK!', 'success');
+                    log(resultId, `📊 Total de agendamentos: ${data || 0}`, 'info');
+                }
+            } catch (error) {
+                log(resultId, `❌ Erro de conexão: ${error.message}`, 'error');
+            }
+        }
+
+        async function verificarTabelas() {
+            const resultId = 'resultado-tabelas';
+            document.getElementById(resultId).innerHTML = '';
+            log(resultId, '🔄 Verificando tabelas...', 'info');
+
+            const tabelas = ['agendamentos', 'clientes', 'administradores', 'usuarios'];
+            
+            for (const tabela of tabelas) {
+                try {
+                    const { createClient } = supabase;
+                    const client = createClient(
+                        'https://tvccuvzcmnrqtrakudju.supabase.co',
+                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
+                    );
+
+                    const { data, error } = await client.from(tabela).select('*', { count: 'exact', head: true });
+                    
+                    if (error) {
+                        if (error.code === '42P01') {
+                            log(resultId, `❌ Tabela "${tabela}" não existe`, 'error');
+                        } else {
+                            log(resultId, `⚠️ Tabela "${tabela}": ${error.message}`, 'error');
+                        }
+                    } else {
+                        log(resultId, `✅ Tabela "${tabela}" existe (${data || 0} registros)`, 'success');
+                    }
+                } catch (error) {
+                    log(resultId, `❌ Erro ao verificar "${tabela}": ${error.message}`, 'error');
+                }
+            }
+        }
+
+        async function testarAgendamentos() {
+            const resultId = 'resultado-agendamentos';
+            document.getElementById(resultId).innerHTML = '';
+            log(resultId, '🔄 Testando agendamentos...', 'info');
+
+            try {
+                const result = await window.supabaseAgendamento.listarAgendamentos();
+                
+                if (result.success) {
+                    log(resultId, `✅ ${result.data.length} agendamentos encontrados`, 'success');
+                    result.data.slice(0, 3).forEach(agendamento => {
+                        log(resultId, `📅 ${agendamento.nome_cliente} - ${agendamento.data_agendamento} - ${agendamento.status}`, 'info');
+                    });
+                } else {
+                    log(resultId, '❌ Erro ao listar agendamentos', 'error');
+                }
+            } catch (error) {
+                log(resultId, `❌ Erro: ${error.message}`, 'error');
+            }
+        }
+
+        async function criarAgendamentoTeste() {
+            const resultId = 'resultado-agendamentos';
+            log(resultId, '🔄 Criando agendamento teste...', 'info');
+
+            const dadosTeste = {
+                clientName: 'Teste Cliente',
+                email: 'teste@email.com',
+                phone: '(11) 99999-9999',
+                age: '25',
+                service: 'Tatuagem Teste',
+                date: '2024-02-01',
+                time: '14:00',
+                artist: 'Artista Teste',
+                description: 'Teste do sistema'
+            };
+
+            try {
+                const result = await window.supabaseAgendamento.criarAgendamento(dadosTeste);
+                
+                if (result.success) {
+                    log(resultId, '✅ Agendamento teste criado!', 'success');
+                    log(resultId, `📝 ID: ${result.data[0].id}`, 'info');
+                } else {
+                    log(resultId, '❌ Erro ao criar agendamento teste', 'error');
+                }
+            } catch (error) {
+                log(resultId, `❌ Erro: ${error.message}`, 'error');
+            }
+        }
+
+        async function testarUsuarios() {
+            const resultId = 'resultado-usuarios';
+            document.getElementById(resultId).innerHTML = '';
+            log(resultId, '🔄 Verificando usuários...', 'info');
+
+            try {
+                const { createClient } = supabase;
+                const client = createClient(
+                    'https://tvccuvzcmnrqtrakudju.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
+                );
+
+                // Testar tabela clientes
+                const { data: clientes, error: errorClientes } = await client.from('clientes').select('*');
+                if (!errorClientes) {
+                    log(resultId, `✅ Clientes: ${clientes.length} registros`, 'success');
+                } else {
+                    log(resultId, `❌ Clientes: ${errorClientes.message}`, 'error');
+                }
+
+                // Testar tabela administradores
+                const { data: admins, error: errorAdmins } = await client.from('administradores').select('*');
+                if (!errorAdmins) {
+                    log(resultId, `✅ Administradores: ${admins.length} registros`, 'success');
+                } else {
+                    log(resultId, `❌ Administradores: ${errorAdmins.message}`, 'error');
+                }
+
+            } catch (error) {
+                log(resultId, `❌ Erro geral: ${error.message}`, 'error');
+            }
+        }
+
+        // Executar teste inicial
+        window.onload = () => {
+            log('resultado-conexao', '🚀 Página carregada', 'info');
+        };
+    </script>
+</body>
+</html>
