@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Login Simples</title>
+</head>
+<body>
+    <h1>Teste Login</h1>
+    <form id="test-form">
+        <input type="email" id="email" placeholder="Email" value="admin@inkflow.com">
+        <input type="password" id="password" placeholder="Senha" value="admin123">
+        <button type="submit">Login</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <script>
+        document.getElementById('test-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const result = document.getElementById('result');
+            
+            result.innerHTML = 'Testando...';
+            
+            try {
+                const response = await fetch('http://localhost:3001/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                result.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                
+                if (data.success) {
+                    localStorage.setItem('userLoggedIn', 'true');
+                    localStorage.setItem('userEmail', data.user.email);
+                    result.innerHTML += '<br><strong>Login salvo no localStorage!</strong>';
+                }
+            } catch (error) {
+                result.innerHTML = `Erro: ${error.message}`;
+            }
+        });
+        
+        // Verificar se está logado
+        if (localStorage.getItem('userLoggedIn') === 'true') {
+            document.getElementById('result').innerHTML = 'Usuário já está logado!';
+        }
+    </script>
+</body>
+</html>

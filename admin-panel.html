@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Ink Flow</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #1a1a1a; color: white; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .section { margin: 30px 0; padding: 20px; background: #2a2a2a; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #444; }
+        th { background: #333; }
+        .btn { padding: 8px 16px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-delete { background: #dc3545; color: white; }
+        .btn-delete:hover { background: #c82333; }
+        .btn-refresh { background: #007bff; color: white; }
+        .btn-refresh:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Painel Administrativo</h1>
+        
+        <div class="section">
+            <h2>Usuários</h2>
+            <button class="btn btn-refresh" onclick="loadUsers()">Atualizar</button>
+            <table id="users-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Criado em</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Agendamentos</h2>
+            <button class="btn btn-refresh" onclick="loadAppointments()">Atualizar</button>
+            <table id="appointments-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Email</th>
+                        <th>Serviço</th>
+                        <th>Data</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function loadUsers() {
+            try {
+                const response = await fetch('http://localhost:3001/users');
+                const users = await response.json();
+                
+                const tbody = document.querySelector('#users-table tbody');
+                tbody.innerHTML = '';
+                
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.id}</td>
+                        <td>${user.nome || user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${new Date(user.criado_em).toLocaleDateString()}</td>
+                        <td>
+                            <button class="btn btn-delete" onclick="deleteUser(${user.id})">
+                                Deletar
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                alert('Erro ao carregar usuários: ' + error.message);
+            }
+        }
+
+        async function loadAppointments() {
+            try {
+                const response = await fetch('http://localhost:3001/appointments');
+                const appointments = await response.json();
+                
+                const tbody = document.querySelector('#appointments-table tbody');
+                tbody.innerHTML = '';
+                
+                appointments.forEach(appointment => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${appointment.id}</td>
+                        <td>${appointment.cliente_nome}</td>
+                        <td>${appointment.email}</td>
+                        <td>${appointment.servico}</td>
+                        <td>${new Date(appointment.data_agendamento).toLocaleDateString()}</td>
+                        <td>${appointment.status}</td>
+                        <td>
+                            <button class="btn btn-delete" onclick="deleteAppointment(${appointment.id})">
+                                Deletar
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                alert('Erro ao carregar agendamentos: ' + error.message);
+            }
+        }
+
+        async function deleteUser(id) {
+            if (!confirm('Tem certeza que deseja deletar este usuário?')) return;
+            
+            try {
+                const response = await fetch(`http://localhost:3001/users/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                alert(result.message);
+                loadUsers();
+            } catch (error) {
+                alert('Erro ao deletar usuário: ' + error.message);
+            }
+        }
+
+        async function deleteAppointment(id) {
+            if (!confirm('Tem certeza que deseja deletar este agendamento?')) return;
+            
+            try {
+                const response = await fetch(`http://localhost:3001/appointments/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                alert(result.message);
+                loadAppointments();
+            } catch (error) {
+                alert('Erro ao deletar agendamento: ' + error.message);
+            }
+        }
+
+        // Carregar dados ao abrir a página
+        window.onload = function() {
+            loadUsers();
+            loadAppointments();
+        };
+    </script>
+</body>
+</html>

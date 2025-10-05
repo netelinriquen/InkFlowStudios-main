@@ -5,49 +5,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meus Agendamentos - Ink Flow</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
-    <link rel="icon" type="image/png" href="../assets/images/favicon-round.png">
     <style>
-        .client-area {
+        .appointments-container {
+            max-width: 1000px;
+            margin: 2rem auto;
             padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            margin-top: 80px;
         }
-        .welcome-section {
-            background: var(--gradient-card);
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-        .appointments-grid {
-            display: grid;
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
+        
         .appointment-card {
-            background: var(--gradient-card);
-            padding: 1.5rem;
+            background: var(--secondary-dark);
             border-radius: 10px;
-            border: 1px solid var(--tertiary-dark);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--accent-red);
         }
+        
+        .appointment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .appointment-date {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-red);
+        }
+        
         .appointment-status {
             padding: 0.3rem 0.8rem;
             border-radius: 15px;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             font-weight: bold;
         }
-        .status-confirmado { background: #4CAF50; color: white; }
-        .status-pendente { background: #FF9800; color: white; }
-        .status-cancelado { background: #F44336; color: white; }
-        .logout-btn {
-            background: var(--accent-red);
+        
+        .status-pendente { background: #ffc107; color: #000; }
+        .status-confirmado { background: #28a745; color: white; }
+        .status-concluido { background: #6c757d; color: white; }
+        .status-cancelado { background: #dc3545; color: white; }
+        
+        .appointment-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 0.3rem;
+        }
+        
+        .detail-value {
+            font-weight: bold;
+            color: var(--text-light);
+        }
+        
+        .appointment-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btn-delete {
+            background: #dc3545;
             color: white;
             border: none;
             padding: 0.5rem 1rem;
             border-radius: 5px;
             cursor: pointer;
-            float: right;
+            transition: background 0.3s;
+        }
+        
+        .btn-delete:hover {
+            background: #c82333;
+        }
+        
+        .no-appointments {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-gray);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-gray);
         }
     </style>
 </head>
@@ -63,227 +113,147 @@
                 <li><a href="agendamento.html">Agendamento</a></li>
                 <li><a href="contato.html">Contato</a></li>
             </ul>
-            <button class="logout-btn" onclick="logout()">Sair</button>
+            <a href="login.html" style="color: var(--text-light); text-decoration: none; padding: 0.5rem 1rem; border: 1px solid var(--accent-red); border-radius: 4px; transition: all 0.3s ease;">Login</a>
         </nav>
     </header>
 
-    <main class="client-area">
-        <div class="welcome-section">
-            <h1>Bem-vindo, <span id="user-name">Cliente</span>!</h1>
-            <p>Aqui você pode acompanhar todos os seus agendamentos</p>
-        </div>
-
-        <section>
-            <h2>Meus Agendamentos</h2>
-            <div class="appointments-grid" id="appointments-list">
-                <!-- Agendamentos serão carregados aqui -->
+    <main>
+        <div class="appointments-container">
+            <h1 style="text-align: center; color: var(--accent-red); margin-bottom: 2rem;">
+                Meus Agendamentos
+            </h1>
+            
+            <div id="loading" class="loading">
+                Carregando seus agendamentos...
             </div>
-        </section>
+            
+            <div id="appointments-list"></div>
+        </div>
     </main>
 
     <footer>
-        <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem;">
-            <a href="https://www.instagram.com/inkflowstudios" target="_blank" style="color: var(--text-gray); text-decoration: none; padding: 0.5rem; border: 1px solid #333; border-radius: 4px; transition: all 0.3s ease;" aria-label="Instagram">Instagram</a>
-            <a href="https://www.tiktok.com/@inkflowstudios" target="_blank" style="color: var(--text-gray); text-decoration: none; padding: 0.5rem; border: 1px solid #333; border-radius: 4px; transition: all 0.3s ease;" aria-label="TikTok">TikTok</a>
-            <a href="https://wa.me/15144373894" target="_blank" style="color: var(--text-gray); text-decoration: none; padding: 0.5rem; border: 1px solid #333; border-radius: 4px; transition: all 0.3s ease;" aria-label="WhatsApp">WhatsApp</a>
-            <a href="mailto:inkflowstudios07@gmail.com" target="_blank" style="color: var(--text-gray); text-decoration: none; padding: 0.5rem; border: 1px solid #333; border-radius: 4px; transition: all 0.3s ease;" aria-label="Email">Email</a>
-        </div>
         <div style="text-align: center; color: var(--text-gray); font-size: 0.9rem;">
-            <p>&copy; 2025 Ink Flow Estúdio de Tatuagem Ltda. Todos os direitos reservados.</p>
-            <p>São Paulo, SP - Brasil | CNPJ: 00.000.000/0001-00</p>
+            <p>&copy; 2025 Ink Flow Estúdio de Tatuagem. Todos os direitos reservados.</p>
         </div>
     </footer>
 
-    <script src="../assets/js/api.js"></script>
-    <script src="../assets/js/appointment-sync.js"></script>
     <script src="../assets/js/auth.js"></script>
-    <script src="../assets/js/global-auth.js"></script>
-    <script src="../assets/js/login-fix.js"></script>
     <script>
-        // Verificar se está logado
-        document.addEventListener('DOMContentLoaded', function() {
+        async function loadMyAppointments() {
+            const loading = document.getElementById('loading');
+            const appointmentsList = document.getElementById('appointments-list');
+            
+            // Verificar se usuário está logado
             if (!window.authSystem || !window.authSystem.isLoggedIn()) {
-                alert('Você precisa fazer login para acessar esta página.');
-                window.location.href = 'login.html';
+                loading.innerHTML = '<p>Você precisa fazer login para ver seus agendamentos.</p><a href="login.html" class="btn">Fazer Login</a>';
                 return;
             }
             
-            // Carregar dados do usuário
-            const currentUser = window.authSystem.getCurrentUser();
-            if (currentUser) {
-                const userName = currentUser.name || currentUser.email.split('@')[0];
-                document.getElementById('user-name').textContent = userName;
+            const user = window.authSystem.getCurrentUser();
+            if (!user || !user.email) {
+                loading.innerHTML = '<p>Erro ao obter dados do usuário.</p>';
+                return;
             }
-            
-            // Carregar agendamentos
-            loadAppointments();
-            
-            // Escutar mudanças em tempo real
-            if (window.DataSync) {
-                DataSync.subscribe('appointments', function(data) {
-                    console.log('Atualização de agendamento recebida:', data);
-                    loadAppointments(); // Recarregar lista
-                });
-            }
-            
-            // Escutar eventos de sincronização entre abas
-            window.addEventListener('dataSync', function(event) {
-                if (event.detail.type === 'appointments') {
-                    console.log('Sincronização entre abas:', event.detail);
-                    loadAppointments();
-                }
-            });
-            
-            // Escutar mudanças no localStorage
-            window.addEventListener('storage', function(event) {
-                if (event.key === 'appointments') {
-                    console.log('LocalStorage atualizado');
-                    loadAppointments();
-                }
-            });
-        });
-
-        // Carregar agendamentos do banco
-        let appointments = [];
-
-        async function loadAppointments() {
-            const currentUser = window.authSystem.getCurrentUser();
-            if (!currentUser) return;
             
             try {
-                // Tentar carregar do SQL Server
-                const response = await fetch('http://localhost:3001/appointments');
-                const allAppointments = await response.json();
+                const response = await fetch(`http://localhost:3001/my-appointments?email=${encodeURIComponent(user.email)}`);
+                const appointments = await response.json();
                 
-                // Filtrar agendamentos do usuário atual
-                appointments = allAppointments.filter(apt => 
-                    apt.email === currentUser.email || 
-                    apt.cliente_nome === currentUser.name
-                );
+                loading.style.display = 'none';
                 
-                console.log('✅ Agendamentos carregados do SQL Server:', appointments.length);
-            } catch (error) {
-                console.log('❌ Erro ao carregar do SQL Server, usando localStorage');
-                // Fallback para localStorage
-                const localAppointments = JSON.parse(localStorage.getItem('appointments') || '[]');
-                appointments = localAppointments.filter(apt => 
-                    apt.userId === currentUser.id || 
-                    apt.userEmail === currentUser.email
-                );
-            }
-            
-            renderAppointments();
-        }
-
-        function renderAppointments() {
-            const container = document.getElementById('appointments-list');
-            
-            if (appointments.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 3rem; color: var(--text-gray);">
-                        <h3>Nenhum agendamento encontrado</h3>
-                        <p>Você ainda não possui agendamentos.</p>
-                        <a href="agendamento.html" class="btn" style="margin-top: 1rem;">Fazer Agendamento</a>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = appointments.map(appointment => {
-                const status = appointment.status || 'pendente';
-                const statusText = {
-                    'pending': 'PENDENTE',
-                    'pendente': 'PENDENTE', 
-                    'confirmed': 'CONFIRMADO',
-                    'confirmado': 'CONFIRMADO',
-                    'cancelled': 'CANCELADO',
-                    'cancelado': 'CANCELADO'
-                }[status] || status.toUpperCase();
-                
-                return `
-                    <div class="appointment-card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                            <h3 style="color: var(--accent-red);">${appointment.service || 'Tatuagem Personalizada'}</h3>
-                            <span class="appointment-status status-${status}">${statusText}</span>
+                if (appointments.length === 0) {
+                    appointmentsList.innerHTML = `
+                        <div class="no-appointments">
+                            <h3>Você ainda não tem agendamentos</h3>
+                            <p>Que tal agendar sua primeira sessão?</p>
+                            <a href="agendamento.html" class="btn" style="display: inline-block; margin-top: 1rem;">
+                                Agendar Agora
+                            </a>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div>
-                                <p><strong>Nome:</strong> ${appointment.name || 'Não informado'}</p>
-                                <p><strong>Telefone:</strong> ${appointment.phone || 'Não informado'}</p>
-                                <p><strong>Idade:</strong> ${appointment.age || 'Não informado'} anos</p>
-                                <p><strong>Artista:</strong> ${getArtistName(appointment.artist)}</p>
-                                <p><strong>Tamanho:</strong> ${getSizeName(appointment.size)}</p>
-                            </div>
-                            <div>
-                                <p><strong>Local:</strong> ${appointment.location || 'Não especificado'}</p>
-                                <p><strong>Orçamento:</strong> ${appointment.budget || 'A definir'}</p>
-                                <p><strong>Primeira tatuagem:</strong> ${appointment.firstTattoo ? 'Sim' : 'Não'}</p>
-                                <p><strong>Data:</strong> ${formatDate(appointment)}</p>
-                            </div>
-                        </div>
-                        <div style="margin-top: 1rem;">
-                            <p><strong>Descrição:</strong> ${appointment.description || 'Nenhuma descrição fornecida'}</p>
-                            <p><strong>Disponibilidade:</strong> ${appointment.availability || 'Não especificado'}</p>
-                        </div>
-                        ${(status === 'pending' || status === 'pendente') ? 
-                            `<button onclick="cancelAppointment(${appointment.id})" style="background: var(--accent-red); color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; margin-top: 1rem;">Cancelar Solicitação</button>` : 
-                            ''
-                        }
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function getArtistName(artist) {
-            const artists = {
-                'marcus': 'Marcus Silva (Realismo)',
-                'ana': 'Ana Costa (Fine Line/Aquarela)', 
-                'rafael': 'Rafael Santos (Geométrico/Tradicional)',
-                'carla': 'Carla Mendes (Blackwork)'
-            };
-            return artists[artist] || artist || 'Sem preferência';
-        }
-        
-        function getSizeName(size) {
-            const sizes = {
-                'pequena': 'Pequena (até 5cm)',
-                'media': 'Média (5-15cm)',
-                'grande': 'Grande (15cm+)'
-            };
-            return sizes[size] || size || 'Não especificado';
-        }
-        
-        function formatDate(appointment) {
-            if (appointment.createdAt) {
-                return new Date(appointment.createdAt).toLocaleDateString('pt-BR');
-            }
-            if (appointment.date) {
-                return new Date(appointment.date).toLocaleDateString('pt-BR');
-            }
-            return 'Data não disponível';
-        }
-
-        function cancelAppointment(id) {
-            if (confirm('Tem certeza que deseja cancelar este agendamento?')) {
-                const updated = AppointmentSync.updateAppointmentStatus(id, 'cancelado');
-                if (updated) {
-                    loadAppointments();
-                    alert('❌ Agendamento cancelado com sucesso!');
-                } else {
-                    alert('Erro ao cancelar agendamento. Tente novamente.');
+                    `;
+                    return;
                 }
+                
+                appointmentsList.innerHTML = appointments.map(appointment => `
+                    <div class="appointment-card">
+                        <div class="appointment-header">
+                            <div class="appointment-date">
+                                ${new Date(appointment.data_agendamento).toLocaleDateString('pt-BR')} às ${appointment.horario}
+                            </div>
+                            <div class="appointment-status status-${appointment.status}">
+                                ${appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+                            </div>
+                        </div>
+                        
+                        <div class="appointment-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Serviço</span>
+                                <span class="detail-value">${appointment.servico}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Artista</span>
+                                <span class="detail-value">${appointment.artista}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Tamanho</span>
+                                <span class="detail-value">${appointment.tamanho}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Local do Corpo</span>
+                                <span class="detail-value">${appointment.local_corpo}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Orçamento</span>
+                                <span class="detail-value">${appointment.orcamento}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Preço</span>
+                                <span class="detail-value">R$ ${appointment.preco}</span>
+                            </div>
+                        </div>
+                        
+                        ${appointment.descricao ? `
+                            <div class="detail-item" style="margin-top: 1rem;">
+                                <span class="detail-label">Descrição</span>
+                                <span class="detail-value">${appointment.descricao}</span>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="appointment-actions">
+                            ${appointment.status === 'pendente' ? `
+                                <button class="btn-delete" onclick="cancelAppointment(${appointment.id})">
+                                    Cancelar Agendamento
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                loading.innerHTML = `<p>Erro ao carregar agendamentos: ${error.message}</p>`;
             }
         }
-
-        function logout() {
-            if (window.authSystem) {
-                window.authSystem.logout();
-            } else {
-                window.safeLogout();
+        
+        async function cancelAppointment(id) {
+            if (!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
+            
+            try {
+                const response = await fetch(`http://localhost:3001/appointments/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                alert(result.message);
+                loadMyAppointments(); // Recarregar lista
+            } catch (error) {
+                alert('Erro ao cancelar agendamento: ' + error.message);
             }
         }
-
-        // Remover esta linha pois agora o carregamento é feito no DOMContentLoaded
+        
+        // Carregar agendamentos quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMyAppointments();
+        });
     </script>
 </body>
 </html>

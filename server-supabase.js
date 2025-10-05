@@ -83,6 +83,57 @@ const server = http.createServer(async (req, res) => {
     return
   }
 
+  // Deletar usuário por ID (admin)
+  if (req.method === 'DELETE' && parsedUrl.pathname.startsWith('/users/')) {
+    try {
+      const userId = parsedUrl.pathname.split('/')[2]
+      const { error } = await supabase
+        .from('usuarios')
+        .delete()
+        .eq('id', userId)
+      
+      if (error) throw error
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ message: 'Usuário deletado com sucesso!' }))
+    } catch (error) {
+      res.writeHead(500, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ error: error.message }))
+    }
+    return
+  }
+
+  // Deletar própria conta
+  if (req.method === 'DELETE' && parsedUrl.pathname === '/delete-account') {
+    console.log('Recebida requisição DELETE /delete-account');
+    let body = ''
+    req.on('data', chunk => body += chunk)
+    req.on('end', async () => {
+      try {
+        const { email } = JSON.parse(body)
+        
+        // Primeiro deletar agendamentos do usuário
+        await supabase
+          .from('agendamentos')
+          .delete()
+          .eq('email', email)
+        
+        // Depois deletar o usuário
+        const { error } = await supabase
+          .from('usuarios')
+          .delete()
+          .eq('email', email)
+        
+        if (error) throw error
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ message: 'Conta deletada com sucesso!' }))
+      } catch (error) {
+        res.writeHead(500, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ error: error.message }))
+      }
+    })
+    return
+  }
+
   // Listar usuários
   if (req.method === 'GET' && (parsedUrl.pathname === '/users' || parsedUrl.pathname === '/api/users')) {
     try {
@@ -136,6 +187,52 @@ const server = http.createServer(async (req, res) => {
         res.end(JSON.stringify({ error: error.message }))
       }
     })
+    return
+  }
+
+  // Deletar agendamento
+  if (req.method === 'DELETE' && parsedUrl.pathname.startsWith('/appointments/')) {
+    try {
+      const appointmentId = parsedUrl.pathname.split('/')[2]
+      const { error } = await supabase
+        .from('agendamentos')
+        .delete()
+        .eq('id', appointmentId)
+      
+      if (error) throw error
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ message: 'Agendamento deletado com sucesso!' }))
+    } catch (error) {
+      res.writeHead(500, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ error: error.message }))
+    }
+    return
+  }
+
+  // Buscar agendamentos por email
+  if (req.method === 'GET' && parsedUrl.pathname === '/my-appointments') {
+    try {
+      const email = parsedUrl.query.email
+      if (!email) {
+        res.writeHead(400, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ error: 'Email é obrigatório' }))
+        return
+      }
+      
+      const { data, error } = await supabase
+        .from('agendamentos')
+        .select('*')
+        .eq('email', email)
+        .order('data_agendamento', { ascending: true })
+        .order('horario', { ascending: true })
+      
+      if (error) throw error
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify(data))
+    } catch (error) {
+      res.writeHead(500, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ error: error.message }))
+    }
     return
   }
 

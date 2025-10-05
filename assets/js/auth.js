@@ -122,6 +122,14 @@ class AuthSystem {
             if (meusAgendamentosLink) {
                 meusAgendamentosLink.style.display = 'block';
             }
+            
+            // Adicionar link do perfil se não existir
+            const navLinks = document.querySelector('.nav-links');
+            if (navLinks && !document.getElementById('perfil-link')) {
+                const perfilLink = document.createElement('li');
+                perfilLink.innerHTML = '<a href="perfil.html" id="perfil-link">Perfil</a>';
+                navLinks.appendChild(perfilLink);
+            }
         } else {
             // Usuário não logado - mostrar botão de login
             loginLinks.forEach(loginLink => {
@@ -152,7 +160,7 @@ class AuthSystem {
 window.authSystem = new AuthSystem();
 
 // Testar conexão com banco
-fetch('http://localhost:3000/users')
+fetch('http://localhost:3001/users')
     .then(response => response.json())
     .then(data => console.log('✅ Banco conectado:', data.length, 'usuários'))
     .catch(error => console.log('❌ Banco offline, usando localStorage'));
