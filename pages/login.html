@@ -306,21 +306,18 @@
                     
                     alert('Login realizado com sucesso!');
                     
-                    // Verificar se há página de redirecionamento
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const redirect = urlParams.get('redirect');
-                    
-                    if (redirect) {
-                        window.location.href = redirect;
-                    } else {
-                        // Voltar para a página anterior ou home
-                        const referrer = document.referrer;
-                        if (referrer && referrer.includes(window.location.origin)) {
-                            window.location.href = referrer;
+                    // Aguardar um pouco antes de redirecionar
+                    setTimeout(() => {
+                        // Verificar se há página de redirecionamento
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const redirect = urlParams.get('redirect');
+                        
+                        if (redirect) {
+                            window.location.href = redirect;
                         } else {
                             window.location.href = '../index.html';
                         }
-                    }
+                    }, 1000);
                 } else {
                     alert(result.message || 'Email ou senha inválidos');
                 }
@@ -352,13 +349,11 @@
                     }
                     
                     alert('Login realizado com sucesso!');
-                    // Voltar para a página anterior ou home
-                    const referrer = document.referrer;
-                    if (referrer && referrer.includes(window.location.origin)) {
-                        window.location.href = referrer;
-                    } else {
+                    
+                    // Aguardar um pouco antes de redirecionar
+                    setTimeout(() => {
                         window.location.href = '../index.html';
-                    }
+                    }, 1000);
                 } else {
                     alert('Email ou senha inválidos');
                 }

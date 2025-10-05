@@ -278,4 +278,5 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, () => {
     console.log(`🚀 Servidor SQL Server na porta ${PORT}`);
-    console.log(`📊 Teste: http://localhost:${PORT}/tes
+    console.log(`📊 Teste: http://localhost:${PORT}/test`);
+});
