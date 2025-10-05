@@ -156,6 +156,7 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../assets/js/auth.js"></script>
     <script>
         function loadProfile() {
@@ -223,26 +224,36 @@
             }
             
             try {
-                const response = await fetch('http://localhost:3001/delete-account', {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: user.email })
-                });
+                // Usar Supabase diretamente
+                const { createClient } = supabase;
+                const supabaseClient = createClient(
+                    'https://tvccuvzcmnrqtrakudju.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
+                );
                 
-                const result = await response.json();
+                // Deletar agendamentos primeiro
+                await supabaseClient
+                    .from('agendamentos')
+                    .delete()
+                    .eq('email', user.email);
                 
-                if (response.ok) {
-                    alert('Conta deletada com sucesso. Você será redirecionado para a página inicial.');
-                    
-                    // Limpar dados de login
-                    localStorage.clear();
-                    sessionStorage.clear();
-                    
-                    // Redirecionar para home
-                    window.location.href = '../index.html';
-                } else {
-                    alert('Erro ao deletar conta: ' + result.error);
-                }
+                // Deletar usuário
+                const { error } = await supabaseClient
+                    .from('usuarios')
+                    .delete()
+                    .eq('email', user.email);
+                
+                if (error) throw error;
+                
+                alert('Conta deletada com sucesso. Você será redirecionado para a página inicial.');
+                
+                // Limpar dados de login
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Redirecionar para home
+                window.location.href = '../index.html';
+                
             } catch (error) {
                 alert('Erro ao deletar conta: ' + error.message);
             }
