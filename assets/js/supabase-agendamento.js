@@ -33,12 +33,7 @@ async function criarAgendamento(dadosAgendamento) {
             servico: dadosAgendamento.service,
             data_agendamento: dadosAgendamento.date,
             horario: dadosAgendamento.time,
-            artista_preferido: dadosAgendamento.artist || 'Sem preferência',
-            tamanho: dadosAgendamento.size,
-            local_corpo: dadosAgendamento.location,
-            descricao: dadosAgendamento.description,
-            orcamento: dadosAgendamento.budget,
-            primeira_tatuagem: dadosAgendamento.firstTattoo || false,
+            descricao: `Artista: ${dadosAgendamento.artist || 'Sem preferência'} | Tamanho: ${dadosAgendamento.size || 'N/A'} | Local: ${dadosAgendamento.location || 'N/A'} | Orçamento: ${dadosAgendamento.budget || 'N/A'} | Primeira tatuagem: ${dadosAgendamento.firstTattoo ? 'Sim' : 'Não'} | Descrição: ${dadosAgendamento.description || 'N/A'}`,
             status: 'pendente'
         };
         
