@@ -1,8 +1,8 @@
 -- Banco SQL Server
-CREATE DATABASE inkflowstudios;
+CREATE DATABASE INKFLOW;
 GO
 
-USE inkflowstudios;
+USE INKFLOW;
 GO
 
 -- Tabela de Usuários
@@ -64,3 +64,6 @@ INSERT INTO artistas (nome, telefone, especialidades) VALUES
 INSERT INTO clientes (nome, telefone, email) VALUES 
 ('Carlos Oliveira', '11777777777', 'carlos@email.com'),
 ('Ana Costa', '11666666666', 'ana@email.com');
+
+SELECT * FROM usuarios;
+SELECT * FROM agendamentos;

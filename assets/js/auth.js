@@ -127,7 +127,17 @@ class AuthSystem {
             const navLinks = document.querySelector('.nav-links');
             if (navLinks && !document.getElementById('perfil-link')) {
                 const perfilLink = document.createElement('li');
-                perfilLink.innerHTML = '<a href="perfil.html" id="perfil-link">Perfil</a>';
+                // Corrigir href baseado na localização atual
+                const currentPath = window.location.pathname;
+                let perfilHref = 'perfil.html';
+                if (currentPath === '/' || currentPath === '/index.html') {
+                    perfilHref = 'pages/perfil.html';
+                } else if (currentPath.includes('/pages/')) {
+                    perfilHref = 'perfil.html';
+                } else {
+                    perfilHref = 'pages/perfil.html';
+                }
+                perfilLink.innerHTML = `<a href="${perfilHref}" id="perfil-link">Perfil</a>`;
                 navLinks.appendChild(perfilLink);
             }
         } else {

@@ -902,5 +902,43 @@
     <script src="../assets/js/admin-dashboard.js"></script>
     <script src="../assets/js/client-management.js"></script>
     <script src="../assets/js/artist-management.js"></script>
+    <script>
+        // Fallback para carregar agendamentos do localStorage
+        function loadLocalAppointments() {
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const tbody = document.getElementById('appointmentsTableBody');
+            
+            if (appointments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #666;">Nenhum agendamento encontrado</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = appointments.map(app => `
+                <tr>
+                    <td>${app.id}</td>
+                    <td>${app.clientName || app.nome_cliente}</td>
+                    <td>${app.phone || app.telefone}</td>
+                    <td>${app.service || app.servico}</td>
+                    <td>${new Date(app.date || app.data_agendamento).toLocaleDateString('pt-BR')} ${app.time || app.horario}</td>
+                    <td>${app.artist || app.artista}</td>
+                    <td><span class="status-badge status-${app.status || 'pendente'}">${(app.status || 'pendente').charAt(0).toUpperCase() + (app.status || 'pendente').slice(1)}</span></td>
+                    <td>R$ ${app.price || app.preco || '0'}</td>
+                    <td>
+                        <button class="btn-sm btn-success" onclick="updateAppointmentStatus(${app.id}, 'confirmado')">Confirmar</button>
+                        <button class="btn-sm btn-danger" onclick="updateAppointmentStatus(${app.id}, 'cancelado')">Cancelar</button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Atualizar estatísticas
+            document.getElementById('totalAppointments').textContent = appointments.length;
+            document.getElementById('pendingAppointments').textContent = appointments.filter(a => (a.status || 'pendente') === 'pendente').length;
+        }
+        
+        // Carregar agendamentos quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLocalAppointments();
+        });
+    </script>
 </body>
 </html>

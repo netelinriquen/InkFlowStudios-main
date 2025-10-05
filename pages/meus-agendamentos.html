@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meus Agendamentos - Ink Flow</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="icon" type="image/png" href="../assets/images/favicon-round.png">
+    <link rel="shortcut icon" href="../assets/images/favicon-round.png">
+    <link rel="apple-touch-icon" href="../assets/images/favicon-round.png">
     <style>
         .appointments-container {
             max-width: 1000px;
@@ -160,78 +163,88 @@
                 const appointments = await response.json();
                 
                 loading.style.display = 'none';
-                
-                if (appointments.length === 0) {
-                    appointmentsList.innerHTML = `
-                        <div class="no-appointments">
-                            <h3>Você ainda não tem agendamentos</h3>
-                            <p>Que tal agendar sua primeira sessão?</p>
-                            <a href="agendamento.html" class="btn" style="display: inline-block; margin-top: 1rem;">
-                                Agendar Agora
-                            </a>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                appointmentsList.innerHTML = appointments.map(appointment => `
-                    <div class="appointment-card">
-                        <div class="appointment-header">
-                            <div class="appointment-date">
-                                ${new Date(appointment.data_agendamento).toLocaleDateString('pt-BR')} às ${appointment.horario}
-                            </div>
-                            <div class="appointment-status status-${appointment.status}">
-                                ${appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
-                            </div>
-                        </div>
-                        
-                        <div class="appointment-details">
-                            <div class="detail-item">
-                                <span class="detail-label">Serviço</span>
-                                <span class="detail-value">${appointment.servico}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Artista</span>
-                                <span class="detail-value">${appointment.artista}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Tamanho</span>
-                                <span class="detail-value">${appointment.tamanho}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Local do Corpo</span>
-                                <span class="detail-value">${appointment.local_corpo}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Orçamento</span>
-                                <span class="detail-value">${appointment.orcamento}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Preço</span>
-                                <span class="detail-value">R$ ${appointment.preco}</span>
-                            </div>
-                        </div>
-                        
-                        ${appointment.descricao ? `
-                            <div class="detail-item" style="margin-top: 1rem;">
-                                <span class="detail-label">Descrição</span>
-                                <span class="detail-value">${appointment.descricao}</span>
-                            </div>
-                        ` : ''}
-                        
-                        <div class="appointment-actions">
-                            ${appointment.status === 'pendente' ? `
-                                <button class="btn-delete" onclick="cancelAppointment(${appointment.id})">
-                                    Cancelar Agendamento
-                                </button>
-                            ` : ''}
-                        </div>
-                    </div>
-                `).join('');
+                displayAppointments(appointments);
                 
             } catch (error) {
-                loading.innerHTML = `<p>Erro ao carregar agendamentos: ${error.message}</p>`;
+                // Fallback para localStorage quando servidor não disponível
+                const appointments = JSON.parse(localStorage.getItem('appointments') || '[]')
+                    .filter(app => app.email === user.email);
+                
+                loading.style.display = 'none';
+                displayAppointments(appointments);
             }
+        }
+        
+        function displayAppointments(appointments) {
+            const appointmentsList = document.getElementById('appointments-list');
+            
+            if (appointments.length === 0) {
+                appointmentsList.innerHTML = `
+                    <div class="no-appointments">
+                        <h3>Você ainda não tem agendamentos</h3>
+                        <p>Que tal agendar sua primeira sessão?</p>
+                        <a href="agendamento.html" class="btn" style="display: inline-block; margin-top: 1rem;">
+                            Agendar Agora
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            appointmentsList.innerHTML = appointments.map(appointment => `
+                <div class="appointment-card">
+                    <div class="appointment-header">
+                        <div class="appointment-date">
+                            ${appointment.data_agendamento ? new Date(appointment.data_agendamento).toLocaleDateString('pt-BR') : new Date(appointment.date).toLocaleDateString('pt-BR')} às ${appointment.horario || appointment.time}
+                        </div>
+                        <div class="appointment-status status-${appointment.status || 'pendente'}">
+                            ${(appointment.status || 'pendente').charAt(0).toUpperCase() + (appointment.status || 'pendente').slice(1)}
+                        </div>
+                    </div>
+                    
+                    <div class="appointment-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Serviço</span>
+                            <span class="detail-value">${appointment.servico || appointment.service}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Artista</span>
+                            <span class="detail-value">${appointment.artista || appointment.artist}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Tamanho</span>
+                            <span class="detail-value">${appointment.tamanho || appointment.size}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Local do Corpo</span>
+                            <span class="detail-value">${appointment.local_corpo || appointment.location}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Orçamento</span>
+                            <span class="detail-value">${appointment.orcamento || appointment.budget}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Preço</span>
+                            <span class="detail-value">R$ ${appointment.preco || appointment.price || '0'}</span>
+                        </div>
+                    </div>
+                    
+                    ${(appointment.descricao || appointment.description) ? `
+                        <div class="detail-item" style="margin-top: 1rem;">
+                            <span class="detail-label">Descrição</span>
+                            <span class="detail-value">${appointment.descricao || appointment.description}</span>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="appointment-actions">
+                        ${(appointment.status || 'pendente') === 'pendente' ? `
+                            <button class="btn-delete" onclick="cancelAppointment(${appointment.id})">
+                                Cancelar Agendamento
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
         }
         
         async function cancelAppointment(id) {
@@ -241,12 +254,16 @@
                 const response = await fetch(`http://localhost:3001/appointments/${id}`, {
                     method: 'DELETE'
                 });
-                
                 const result = await response.json();
                 alert(result.message);
-                loadMyAppointments(); // Recarregar lista
+                loadMyAppointments();
             } catch (error) {
-                alert('Erro ao cancelar agendamento: ' + error.message);
+                // Fallback para localStorage
+                const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+                const updatedAppointments = appointments.filter(app => app.id !== id);
+                localStorage.setItem('appointments', JSON.stringify(updatedAppointments));
+                alert('Agendamento cancelado!');
+                loadMyAppointments();
             }
         }
         

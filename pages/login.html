@@ -405,7 +405,7 @@
                 
                 const { data, error } = await supabaseClient
                     .from('usuarios')
-                    .insert([{ nome: name, email, senha: password }]);
+                    .insert([{ nome: name, email, senha: password, tipo: 'cliente' }]);
                 
                 if (!error) {
                     alert('Cadastro realizado com sucesso!');
@@ -443,48 +443,82 @@
         });
 
         // Sistema de login administrativo
-        document.getElementById('admin-form').addEventListener('submit', function(e) {
+        document.getElementById('admin-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const email = document.getElementById('admin-email').value;
             const password = document.getElementById('admin-password').value;
             
-            // Credenciais de administrador
-            const adminCredentials = {
-                email: 'admin@inkflowstudios.com',
-                password: 'InkFlow2024!'
-            };
-            
-            if (email === adminCredentials.email && password === adminCredentials.password) {
-                // Login admin bem-sucedido - SEPARADO do login de cliente
-                const adminData = {
-                    isLoggedIn: true,
-                    isAdmin: true,
-                    user: {
-                        id: 'admin',
-                        email: email,
-                        name: 'Administrador',
-                        role: 'admin'
-                    },
-                    loginTime: new Date().toISOString()
+            try {
+                const { createClient } = supabase;
+                const supabaseClient = createClient(
+                    'https://tvccuvzcmnrqtrakudju.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
+                );
+                
+                const { data, error } = await supabaseClient
+                    .from('usuarios')
+                    .select('id, nome, email, tipo')
+                    .eq('email', email)
+                    .eq('senha', password)
+                    .eq('tipo', 'admin');
+                
+                if (error) throw error;
+                
+                if (data.length > 0) {
+                    const adminUser = data[0];
+                    const adminData = {
+                        isLoggedIn: true,
+                        isAdmin: true,
+                        user: {
+                            id: adminUser.id,
+                            email: adminUser.email,
+                            name: adminUser.nome,
+                            role: 'admin'
+                        },
+                        loginTime: new Date().toISOString()
+                    };
+                    
+                    localStorage.setItem('adminLoginData', JSON.stringify(adminData));
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    
+                    alert('Login administrativo realizado com sucesso!');
+                    setTimeout(() => {
+                        window.location.href = 'admin-dashboard.html';
+                    }, 1000);
+                } else {
+                    alert('Credenciais de administrador inválidas!');
+                }
+            } catch (error) {
+                // Fallback para credenciais hardcoded
+                const adminCredentials = {
+                    email: 'admin@inkflowstudios.com',
+                    password: 'InkFlow2024!'
                 };
                 
-                // Usar chaves específicas para admin - NÃO interferir no login de cliente
-                localStorage.setItem('adminLoginData', JSON.stringify(adminData));
-                localStorage.setItem('adminLoggedIn', 'true');
-                
-                // NÃO tocar nas chaves de cliente
-                // localStorage.removeItem('loginData'); // REMOVIDO
-                // localStorage.removeItem('userLoggedIn'); // REMOVIDO
-                
-                alert('Login administrativo realizado com sucesso!');
-                
-                // Redirecionar para o painel admin
-                setTimeout(() => {
-                    window.location.href = 'admin-dashboard.html';
-                }, 1000);
-            } else {
-                alert('Credenciais de administrador inválidas!');
+                if (email === adminCredentials.email && password === adminCredentials.password) {
+                    const adminData = {
+                        isLoggedIn: true,
+                        isAdmin: true,
+                        user: {
+                            id: 'admin',
+                            email: email,
+                            name: 'Administrador',
+                            role: 'admin'
+                        },
+                        loginTime: new Date().toISOString()
+                    };
+                    
+                    localStorage.setItem('adminLoginData', JSON.stringify(adminData));
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    
+                    alert('Login administrativo realizado com sucesso!');
+                    setTimeout(() => {
+                        window.location.href = 'admin-dashboard.html';
+                    }, 1000);
+                } else {
+                    alert('Credenciais de administrador inválidas!');
+                }
             }
         });
 
