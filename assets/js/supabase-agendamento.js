@@ -113,7 +113,7 @@ async function listarAgendamentos() {
     }
 }
 
-// Função para login
+// Função para login de cliente
 async function fazerLogin(email, senha) {
     if (!supabaseClient) {
         throw new Error('❌ Supabase não inicializado.');
@@ -121,7 +121,7 @@ async function fazerLogin(email, senha) {
     
     try {
         const { data, error } = await supabaseClient
-            .from('usuarios')
+            .from('clientes')
             .select('*')
             .eq('email', email)
             .eq('senha', senha)
@@ -131,28 +131,60 @@ async function fazerLogin(email, senha) {
             throw new Error('❌ Email ou senha incorretos.');
         }
 
-        console.log('✅ Login realizado:', data);
-        return { success: true, user: data };
+        console.log('✅ Login cliente realizado:', data);
+        return { success: true, user: { ...data, tipo: 'cliente' } };
     } catch (error) {
         console.error('❌ Erro no login:', error);
         throw error;
     }
 }
 
-// Função para criar usuário
-async function criarUsuario(dadosUsuario) {
+// Função para login de admin
+async function fazerLoginAdmin(email, senha) {
     if (!supabaseClient) {
         throw new Error('❌ Supabase não inicializado.');
     }
     
     try {
         const { data, error } = await supabaseClient
-            .from('usuarios')
+            .from('administradores')
+            .select('*')
+            .eq('email', email)
+            .eq('senha', senha)
+            .single();
+
+        if (error) {
+            throw new Error('❌ Credenciais de administrador inválidas.');
+        }
+
+        // Atualizar último login
+        await supabaseClient
+            .from('administradores')
+            .update({ ultimo_login: new Date().toISOString() })
+            .eq('id', data.id);
+
+        console.log('✅ Login admin realizado:', data);
+        return { success: true, user: { ...data, tipo: 'admin' } };
+    } catch (error) {
+        console.error('❌ Erro no login admin:', error);
+        throw error;
+    }
+}
+
+// Função para criar cliente
+async function criarCliente(dadosCliente) {
+    if (!supabaseClient) {
+        throw new Error('❌ Supabase não inicializado.');
+    }
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('clientes')
             .insert([{
-                nome: dadosUsuario.nome,
-                email: dadosUsuario.email,
-                senha: dadosUsuario.senha,
-                tipo: dadosUsuario.tipo || 'cliente'
+                nome: dadosCliente.nome,
+                email: dadosCliente.email,
+                senha: dadosCliente.senha,
+                telefone: dadosCliente.telefone || null
             }])
             .select();
 
@@ -163,10 +195,10 @@ async function criarUsuario(dadosUsuario) {
             throw new Error(`❌ Erro: ${error.message}`);
         }
 
-        console.log('✅ Usuário criado:', data);
+        console.log('✅ Cliente criado:', data);
         return { success: true, user: data[0] };
     } catch (error) {
-        console.error('❌ Erro ao criar usuário:', error);
+        console.error('❌ Erro ao criar cliente:', error);
         throw error;
     }
 }
@@ -176,5 +208,6 @@ window.supabaseAgendamento = {
     criarAgendamento,
     listarAgendamentos,
     fazerLogin,
-    criarUsuario
+    fazerLoginAdmin,
+    criarCliente
 };

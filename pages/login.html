@@ -384,11 +384,10 @@
             try {
                 // Tentar criar usuário no servidor SQL
                 // Usar função do Supabase
-                const result = await window.supabaseAgendamento.criarUsuario({
+                const result = await window.supabaseAgendamento.criarCliente({
                     nome: name,
                     email: email,
-                    senha: password,
-                    tipo: 'cliente'
+                    senha: password
                 });
                 
                 alert('Cadastro realizado com sucesso!');
@@ -430,32 +429,29 @@
             const password = document.getElementById('admin-password').value;
             
             try {
-                // Tentar login como admin
-                const result = await window.supabaseAgendamento.fazerLogin(email, password);
+                // Usar função específica de admin
+                const result = await window.supabaseAgendamento.fazerLoginAdmin(email, password);
                 
-                if (result.user.tipo === 'admin') {
-                    const adminData = {
-                        isLoggedIn: true,
-                        isAdmin: true,
-                        user: {
-                            id: result.user.id,
-                            email: result.user.email,
-                            name: result.user.nome,
-                            role: 'admin'
-                        },
-                        loginTime: new Date().toISOString()
-                    };
-                    
-                    localStorage.setItem('adminLoginData', JSON.stringify(adminData));
-                    localStorage.setItem('adminLoggedIn', 'true');
-                    
-                    alert('Login administrativo realizado com sucesso!');
-                    setTimeout(() => {
-                        window.location.href = 'admin-dashboard.html';
-                    }, 1000);
-                } else {
-                    alert('Esta conta não tem permissões de administrador!');
-                }
+                const adminData = {
+                    isLoggedIn: true,
+                    isAdmin: true,
+                    user: {
+                        id: result.user.id,
+                        email: result.user.email,
+                        name: result.user.nome,
+                        role: 'admin',
+                        nivel_acesso: result.user.nivel_acesso
+                    },
+                    loginTime: new Date().toISOString()
+                };
+                
+                localStorage.setItem('adminLoginData', JSON.stringify(adminData));
+                localStorage.setItem('adminLoggedIn', 'true');
+                
+                alert('Login administrativo realizado com sucesso!');
+                setTimeout(() => {
+                    window.location.href = 'admin-dashboard.html';
+                }, 1000);
             } catch (error) {
                 // Fallback para credenciais hardcoded
                 const adminCredentials = {
