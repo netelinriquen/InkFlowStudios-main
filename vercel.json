@@ -1,14 +1,16 @@
 {
-  "builds": [
+  "rewrites": [
     {
-      "src": "server-supabase.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
+      "source": "/pages/(.*)",
+      "destination": "/pages/$1"
+    },
     {
-      "src": "/(.*)",
-      "dest": "/server-supabase.js"
+      "source": "/assets/(.*)",
+      "destination": "/assets/$1"
+    },
+    {
+      "source": "/",
+      "destination": "/index.html"
     }
   ]
 }
