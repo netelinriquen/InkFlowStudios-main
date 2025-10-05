@@ -1,5 +1,5 @@
-// API para comunicação com o banco de dados
-const API_BASE = 'http://localhost:3001';
+// API para comunicação com o banco de dados (usando localStorage como fallback)
+// const API_BASE = 'http://localhost:3001'; // Desabilitado para produção
 
 // Sistema de sincronização em tempo real
 class DataSync {
@@ -32,49 +32,23 @@ class DataSync {
 class API {
     // Usuários
     static async getUsers() {
-        try {
-            const response = await fetch(`${API_BASE}/users`);
-            if (!response.ok) throw new Error('Network error');
-            const data = await response.json();
-            console.log('✅ Banco conectado - usuários:', data.length);
-            return data;
-        } catch (error) {
-            console.log('❌ Usando localStorage:', error.message);
-            return JSON.parse(localStorage.getItem('users') || '[]');
-        }
+        // Usando localStorage diretamente
+        return JSON.parse(localStorage.getItem('users') || '[]');
     }
 
     static async createUser(userData) {
-        try {
-            const response = await fetch(`${API_BASE}/users`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userData)
-            });
-            if (!response.ok) throw new Error('Erro ao criar usuário');
-            const result = await response.json();
-            console.log('✅ Usuário criado no SQL Server:', result);
-            return result;
-        } catch (error) {
-            console.error('❌ Erro ao criar usuário:', error);
-            // Fallback para localStorage
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            userData.id = Date.now();
-            users.push(userData);
-            localStorage.setItem('users', JSON.stringify(users));
-            return userData;
-        }
+        // Usando localStorage diretamente
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        userData.id = Date.now();
+        users.push(userData);
+        localStorage.setItem('users', JSON.stringify(users));
+        return userData;
     }
 
     static async getUserByEmail(email) {
-        try {
-            const response = await fetch(`${API_BASE}/users?email=${email}`);
-            const users = await response.json();
-            return users[0] || null;
-        } catch (error) {
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            return users.find(user => user.email === email) || null;
-        }
+        // Usando localStorage diretamente
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        return users.find(user => user.email === email) || null;
     }
 
     // Agendamentos

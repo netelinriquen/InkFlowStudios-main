@@ -158,21 +158,12 @@
                 return;
             }
             
-            try {
-                const response = await fetch(`http://localhost:3001/my-appointments?email=${encodeURIComponent(user.email)}`);
-                const appointments = await response.json();
-                
-                loading.style.display = 'none';
-                displayAppointments(appointments);
-                
-            } catch (error) {
-                // Fallback para localStorage quando servidor não disponível
-                const appointments = JSON.parse(localStorage.getItem('appointments') || '[]')
-                    .filter(app => app.email === user.email);
-                
-                loading.style.display = 'none';
-                displayAppointments(appointments);
-            }
+            // Usando localStorage diretamente
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]')
+                .filter(app => app.email === user.email);
+            
+            loading.style.display = 'none';
+            displayAppointments(appointments);
         }
         
         function displayAppointments(appointments) {
@@ -250,21 +241,12 @@
         async function cancelAppointment(id) {
             if (!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
             
-            try {
-                const response = await fetch(`http://localhost:3001/appointments/${id}`, {
-                    method: 'DELETE'
-                });
-                const result = await response.json();
-                alert(result.message);
-                loadMyAppointments();
-            } catch (error) {
-                // Fallback para localStorage
-                const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
-                const updatedAppointments = appointments.filter(app => app.id !== id);
-                localStorage.setItem('appointments', JSON.stringify(updatedAppointments));
-                alert('Agendamento cancelado!');
-                loadMyAppointments();
-            }
+            // Usando localStorage diretamente
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const updatedAppointments = appointments.filter(app => app.id != id);
+            localStorage.setItem('appointments', JSON.stringify(updatedAppointments));
+            alert('Agendamento cancelado!');
+            loadMyAppointments();
         }
         
         // Carregar agendamentos quando a página carregar

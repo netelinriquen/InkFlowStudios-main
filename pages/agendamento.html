@@ -403,6 +403,8 @@
     </div>
 
     <link rel="stylesheet" href="../assets/css/chatbot-styles.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="../assets/js/supabase-agendamento.js"></script>
     <script src="../assets/js/api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/global-auth.js"></script>
@@ -445,34 +447,19 @@
             
             console.log('Enviando agendamento:', appointmentData);
             
-            // Enviar para SQL Server
-            fetch('http://localhost:3001/appointments', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(appointmentData)
-            }).then(response => response.json())
+            // Enviar para Supabase
+            window.supabaseAgendamento.criarAgendamento(appointmentData)
             .then(result => {
                 if (result.success) {
                     alert('✅ Agendamento enviado com sucesso! Entraremos em contato em até 24 horas.');
                     this.reset();
                     window.location.href = 'obrigado.html';
                 } else {
-                    throw new Error(result.message || 'Erro no servidor');
+                    throw new Error(result.error || 'Erro ao salvar agendamento');
                 }
             }).catch(error => {
                 console.error('Erro ao enviar agendamento:', error);
-                // Fallback para localStorage
-                const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
-                appointmentData.id = Date.now();
-                appointmentData.userId = currentUser.id;
-                appointmentData.status = 'pendente';
-                appointmentData.createdAt = new Date().toISOString();
-                appointments.push(appointmentData);
-                localStorage.setItem('appointments', JSON.stringify(appointments));
-                
-                alert('✅ Agendamento salvo! Entraremos em contato em breve.');
-                this.reset();
-                window.location.href = 'obrigado.html';
+                alert('❌ Erro ao enviar agendamento. Tente novamente.');
             });
         });
         

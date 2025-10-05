@@ -62,8 +62,7 @@
     <script>
         async function loadUsers() {
             try {
-                const response = await fetch('http://localhost:3001/users');
-                const users = await response.json();
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
                 
                 const tbody = document.querySelector('#users-table tbody');
                 tbody.innerHTML = '';
@@ -74,7 +73,7 @@
                         <td>${user.id}</td>
                         <td>${user.nome || user.name}</td>
                         <td>${user.email}</td>
-                        <td>${new Date(user.criado_em).toLocaleDateString()}</td>
+                        <td>${new Date(user.createdAt || user.criado_em || Date.now()).toLocaleDateString()}</td>
                         <td>
                             <button class="btn btn-delete" onclick="deleteUser(${user.id})">
                                 Deletar
@@ -90,8 +89,7 @@
 
         async function loadAppointments() {
             try {
-                const response = await fetch('http://localhost:3001/appointments');
-                const appointments = await response.json();
+                const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
                 
                 const tbody = document.querySelector('#appointments-table tbody');
                 tbody.innerHTML = '';
@@ -100,11 +98,11 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${appointment.id}</td>
-                        <td>${appointment.cliente_nome}</td>
+                        <td>${appointment.clientName || appointment.cliente_nome}</td>
                         <td>${appointment.email}</td>
-                        <td>${appointment.servico}</td>
-                        <td>${new Date(appointment.data_agendamento).toLocaleDateString()}</td>
-                        <td>${appointment.status}</td>
+                        <td>${appointment.service || appointment.servico}</td>
+                        <td>${new Date(appointment.date || appointment.data_agendamento).toLocaleDateString()}</td>
+                        <td>${appointment.status || 'pendente'}</td>
                         <td>
                             <button class="btn btn-delete" onclick="deleteAppointment(${appointment.id})">
                                 Deletar
@@ -122,12 +120,10 @@
             if (!confirm('Tem certeza que deseja deletar este usuário?')) return;
             
             try {
-                const response = await fetch(`http://localhost:3001/users/${id}`, {
-                    method: 'DELETE'
-                });
-                
-                const result = await response.json();
-                alert(result.message);
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const filtered = users.filter(user => user.id != id);
+                localStorage.setItem('users', JSON.stringify(filtered));
+                alert('Usuário deletado com sucesso!');
                 loadUsers();
             } catch (error) {
                 alert('Erro ao deletar usuário: ' + error.message);
@@ -138,12 +134,10 @@
             if (!confirm('Tem certeza que deseja deletar este agendamento?')) return;
             
             try {
-                const response = await fetch(`http://localhost:3001/appointments/${id}`, {
-                    method: 'DELETE'
-                });
-                
-                const result = await response.json();
-                alert(result.message);
+                const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+                const filtered = appointments.filter(apt => apt.id != id);
+                localStorage.setItem('appointments', JSON.stringify(filtered));
+                alert('Agendamento deletado com sucesso!');
                 loadAppointments();
             } catch (error) {
                 alert('Erro ao deletar agendamento: ' + error.message);

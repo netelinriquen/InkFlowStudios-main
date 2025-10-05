@@ -169,11 +169,7 @@ class AuthSystem {
 // Inicializar sistema de autenticação globalmente
 window.authSystem = new AuthSystem();
 
-// Testar conexão com banco (desabilitado para produção)
-// fetch('http://localhost:3001/users')
-//     .then(response => response.json())
-//     .then(data => console.log('✅ Banco conectado:', data.length, 'usuários'))
-//     .catch(error => console.log('❌ Banco offline, usando localStorage'));
+// Conexão com banco desabilitada para produção
 
 // Função global para verificar login antes de agendar
 window.checkLoginForBooking = function() {
