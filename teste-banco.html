@@ -89,7 +89,7 @@
             document.getElementById(resultId).innerHTML = '';
             log(resultId, '🔄 Verificando tabelas...', 'info');
 
-            const tabelas = ['agendamentos', 'clientes', 'administradores', 'usuarios'];
+            const tabelas = ['agendamentos', 'usuarios'];
             
             for (const tabela of tabelas) {
                 try {
@@ -179,20 +179,15 @@
                     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
                 );
 
-                // Testar tabela clientes
-                const { data: clientes, error: errorClientes } = await client.from('clientes').select('*');
-                if (!errorClientes) {
-                    log(resultId, `✅ Clientes: ${clientes.length} registros`, 'success');
+                // Testar tabela usuarios
+                const { data: usuarios, error: errorUsuarios } = await client.from('usuarios').select('*');
+                if (!errorUsuarios) {
+                    log(resultId, `✅ Usuários: ${usuarios.length} registros`, 'success');
+                    usuarios.forEach(user => {
+                        log(resultId, `👤 ${user.nome} (${user.email}) - ${user.tipo}`, 'info');
+                    });
                 } else {
-                    log(resultId, `❌ Clientes: ${errorClientes.message}`, 'error');
-                }
-
-                // Testar tabela administradores
-                const { data: admins, error: errorAdmins } = await client.from('administradores').select('*');
-                if (!errorAdmins) {
-                    log(resultId, `✅ Administradores: ${admins.length} registros`, 'success');
-                } else {
-                    log(resultId, `❌ Administradores: ${errorAdmins.message}`, 'error');
+                    log(resultId, `❌ Usuários: ${errorUsuarios.message}`, 'error');
                 }
 
             } catch (error) {

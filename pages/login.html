@@ -280,7 +280,7 @@
                 );
                 
                 const { data, error } = await supabaseClient
-                    .from('clientes')
+                    .from('usuarios')
                     .select('*')
                     .eq('email', email)
                     .eq('senha', password)
@@ -408,12 +408,12 @@
                 );
                 
                 const { data, error } = await supabaseClient
-                    .from('clientes')
+                    .from('usuarios')
                     .insert([{
                         nome: name,
                         email: email,
                         senha: password,
-                        telefone: null
+                        tipo: 'cliente'
                     }])
                     .select();
                 
