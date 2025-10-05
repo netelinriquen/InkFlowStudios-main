@@ -140,6 +140,7 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="../assets/js/auth.js"></script>
     <script>
         async function loadMyAppointments() {
@@ -158,12 +159,38 @@
                 return;
             }
             
-            // Usando localStorage diretamente
-            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]')
-                .filter(app => app.email === user.email);
-            
-            loading.style.display = 'none';
-            displayAppointments(appointments);
+            try {
+                // Buscar do Supabase primeiro
+                const { createClient } = supabase;
+                const supabaseClient = createClient(
+                    'https://tvccuvzcmnrqtrakudju.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
+                );
+                
+                const { data: appointments, error } = await supabaseClient
+                    .from('agendamentos')
+                    .select('*')
+                    .eq('email', user.email)
+                    .order('data_agendamento', { ascending: true });
+                
+                if (error) {
+                    console.error('Erro Supabase:', error);
+                    throw error;
+                }
+                
+                console.log('✅ Agendamentos do Supabase:', appointments);
+                loading.style.display = 'none';
+                displayAppointments(appointments || []);
+                
+            } catch (error) {
+                console.warn('Erro no Supabase, usando localStorage:', error);
+                // Fallback para localStorage
+                const appointments = JSON.parse(localStorage.getItem('appointments') || '[]')
+                    .filter(app => app.email === user.email);
+                
+                loading.style.display = 'none';
+                displayAppointments(appointments);
+            }
         }
         
         function displayAppointments(appointments) {
@@ -241,10 +268,32 @@
         async function cancelAppointment(id) {
             if (!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
             
-            // Usando localStorage diretamente
-            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
-            const updatedAppointments = appointments.filter(app => app.id != id);
-            localStorage.setItem('appointments', JSON.stringify(updatedAppointments));
+            try {
+                // Deletar do Supabase
+                const { createClient } = supabase;
+                const supabaseClient = createClient(
+                    'https://tvccuvzcmnrqtrakudju.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
+                );
+                
+                const { error } = await supabaseClient
+                    .from('agendamentos')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) {
+                    throw error;
+                }
+                
+                console.log('✅ Agendamento deletado do Supabase');
+            } catch (error) {
+                console.warn('Erro no Supabase, deletando do localStorage:', error);
+                // Fallback para localStorage
+                const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+                const updatedAppointments = appointments.filter(app => app.id != id);
+                localStorage.setItem('appointments', JSON.stringify(updatedAppointments));
+            }
+            
             alert('Agendamento cancelado!');
             loadMyAppointments();
         }
