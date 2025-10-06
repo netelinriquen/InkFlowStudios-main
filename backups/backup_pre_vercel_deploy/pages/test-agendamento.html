@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Agendamento - Ink Flow</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../index.html" class="logo">INK FLOW</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="agendamento.html">Agendamento</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="section">
+            <h2>🧪 Teste do Sistema de Agendamento</h2>
+            <div style="max-width: 600px; margin: 0 auto; text-align: center;">
+                <div style="background: var(--secondary-dark); padding: 2rem; border-radius: 8px; margin: 2rem 0;">
+                    <h3 style="color: var(--accent-red);">Status dos Componentes:</h3>
+                    <div id="test-results" style="text-align: left; margin: 1rem 0;">
+                        <p>🔄 Verificando componentes...</p>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
+                    <button onclick="testLogin()" class="btn">Testar Login</button>
+                    <button onclick="testAgendamento()" class="btn">Testar Agendamento</button>
+                    <button onclick="testAuth()" class="btn">Testar Auth</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/script.js"></script>
+    <script>
+        function testLogin() {
+            try {
+                window.location.href = 'login.html';
+            } catch (error) {
+                alert('Erro ao acessar login: ' + error.message);
+            }
+        }
+
+        function testAgendamento() {
+            try {
+                if (typeof checkLoginForBooking === 'function') {
+                    checkLoginForBooking();
+                } else {
+                    alert('Função checkLoginForBooking não encontrada!');
+                }
+            } catch (error) {
+                alert('Erro no agendamento: ' + error.message);
+            }
+        }
+
+        function testAuth() {
+            try {
+                const isLoggedIn = window.authSystem ? window.authSystem.isLoggedIn() : false;
+                alert('Status de login: ' + (isLoggedIn ? 'Logado' : 'Não logado'));
+            } catch (error) {
+                alert('Erro no sistema de auth: ' + error.message);
+            }
+        }
+
+        // Verificar componentes
+        document.addEventListener('DOMContentLoaded', function() {
+            const results = document.getElementById('test-results');
+            let html = '';
+            
+            // Verificar se auth.js carregou
+            if (typeof window.authSystem !== 'undefined') {
+                html += '<p>✅ AuthSystem carregado</p>';
+            } else {
+                html += '<p>❌ AuthSystem não carregado</p>';
+            }
+            
+            // Verificar se checkLoginForBooking existe
+            if (typeof window.checkLoginForBooking === 'function') {
+                html += '<p>✅ checkLoginForBooking disponível</p>';
+            } else {
+                html += '<p>❌ checkLoginForBooking não encontrada</p>';
+            }
+            
+            // Verificar CSS
+            const styles = getComputedStyle(document.body);
+            if (styles.fontFamily.includes('Montserrat')) {
+                html += '<p>✅ CSS carregado corretamente</p>';
+            } else {
+                html += '<p>❌ CSS não carregado</p>';
+            }
+            
+            results.innerHTML = html;
+        });
+    </script>
+</body>
+</html>

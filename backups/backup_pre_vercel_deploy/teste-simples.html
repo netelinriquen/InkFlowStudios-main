@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste SQL</title>
+</head>
+<body>
+    <h1>Teste de Conexão SQL</h1>
+    <button onclick="testarConexao()">Testar Conexão</button>
+    <button onclick="criarUsuario()">Criar Usuário</button>
+    <button onclick="listarUsuarios()">Listar Usuários</button>
+    <div id="resultado"></div>
+
+    <script>
+        async function testarConexao() {
+            try {
+                const response = await fetch('http://localhost:3000/test');
+                const data = await response.json();
+                document.getElementById('resultado').innerHTML = `<p>✅ ${data.message}</p>`;
+            } catch (error) {
+                document.getElementById('resultado').innerHTML = `<p>❌ Erro: ${error.message}</p>`;
+            }
+        }
+
+        async function criarUsuario() {
+            try {
+                const response = await fetch('http://localhost:3000/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: 'Teste Usuario',
+                        email: 'teste@email.com',
+                        password: '123456'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Resposta:', data);
+                
+                if (data.message) {
+                    document.getElementById('resultado').innerHTML = `<p>✅ ${data.message}</p>`;
+                } else if (data.error) {
+                    document.getElementById('resultado').innerHTML = `<p>❌ Erro: ${data.error}</p>`;
+                } else {
+                    document.getElementById('resultado').innerHTML = `<p>✅ Resposta: ${JSON.stringify(data)}</p>`;
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('resultado').innerHTML = `<p>❌ Erro: ${error.message}</p>`;
+            }
+        }
+
+        async function listarUsuarios() {
+            try {
+                const response = await fetch('http://localhost:3000/users');
+                const data = await response.json();
+                document.getElementById('resultado').innerHTML = `<p>✅ Usuários: ${JSON.stringify(data, null, 2)}</p>`;
+            } catch (error) {
+                document.getElementById('resultado').innerHTML = `<p>❌ Erro: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

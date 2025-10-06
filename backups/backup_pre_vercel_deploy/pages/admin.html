@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 Painel Administrativo - Ink Flow Studios</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1a1a1a;
+            --secondary-dark: #2d2d2d;
+            --accent-red: #d00000;
+            --text-light: #ffffff;
+            --text-gray: #cccccc;
+        }
+        
+        * { box-sizing: border-box; }
+        body { 
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            color: var(--text-light);
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, var(--accent-red) 0%, #ff4444 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(208, 0, 0, 0.3);
+        }
+        
+        .admin-nav {
+            background: var(--secondary-dark);
+            padding: 1rem 0;
+            border-bottom: 2px solid var(--accent-red);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .nav-tab {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: 2px solid #333;
+            color: var(--text-gray);
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-tab:hover, .nav-tab.active {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(208, 0, 0, 0.4);
+        }
+        
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--secondary-dark) 0%, #333 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #444;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-red), #ff6b6b);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-color: var(--accent-red);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--accent-red);
+            margin-bottom: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-red);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .admin-card {
+            background: linear-gradient(135deg, var(--secondary-dark) 0%, #2a2a2a 100%);
+            border: 1px solid #444;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #333;
+        }
+        
+        .card-icon {
+            font-size: 1.5rem;
+            color: var(--accent-red);
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin: 0;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .data-table th {
+            background: linear-gradient(135deg, var(--accent-red) 0%, #cc0000 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #333;
+            color: var(--text-light);
+        }
+        
+        .data-table tr:hover {
+            background: rgba(208, 0, 0, 0.1);
+        }
+        
+        .btn-action {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin: 0 0.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+            color: white;
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8, #6f42c1);
+            color: white;
+        }
+        
+        .btn-action:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-pending {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            color: #000;
+        }
+        
+        .status-confirmed {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+        
+        .status-cancelled {
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+            color: white;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, var(--secondary-dark), #333);
+            border: 2px solid #444;
+            color: var(--text-light);
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .action-btn:hover {
+            border-color: var(--accent-red);
+            background: linear-gradient(135deg, var(--accent-red), #cc0000);
+            transform: translateY(-2px);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-gray);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Principal -->
+    <div class="admin-header">
+        <h1><i class="fas fa-crown"></i> Painel Administrativo</h1>
+        <p>Ink Flow Studios - Controle Total</p>
+    </div>
+
+    <!-- Navegação por Abas -->
+    <div class="admin-nav">
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('dashboard')">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </button>
+            <button class="nav-tab" onclick="showSection('appointments')">
+                <i class="fas fa-calendar-alt"></i> Agendamentos
+            </button>
+            <button class="nav-tab" onclick="showSection('users')">
+                <i class="fas fa-users"></i> Usuários
+            </button>
+            <button class="nav-tab" onclick="logout()" style="background: #dc3545; color: white;">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </div>
+    </div>
+
+    <main>
+        <div class="admin-container">
+            
+            <!-- Seção Dashboard -->
+            <div id="dashboard" class="section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                        <div class="stat-number" id="totalAppointments">0</div>
+                        <div class="stat-label">Total Agendamentos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <div class="stat-number" id="todayAppointments">0</div>
+                        <div class="stat-label">Hoje</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+                        <div class="stat-number" id="pendingAppointments">0</div>
+                        <div class="stat-label">Pendentes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-number" id="totalUsers">0</div>
+                        <div class="stat-label">Usuários</div>
+                    </div>
+                </div>
+                
+                <div class="admin-card">
+                    <div class="card-header">
+                        <i class="card-icon fas fa-tachometer-alt"></i>
+                        <h3 class="card-title">Visão Geral do Sistema</h3>
+                    </div>
+                    <p style="color: var(--text-gray); margin-bottom: 2rem;">Bem-vindo ao painel de controle do Ink Flow Studios.</p>
+                    
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="showSection('appointments')">
+                            <i class="fas fa-plus-circle"></i><br>
+                            Agendamentos
+                        </button>
+                        <button class="action-btn" onclick="showSection('users')">
+                            <i class="fas fa-user-plus"></i><br>
+                            Usuários
+                        </button>
+                        <button class="action-btn" onclick="exportData()">
+                            <i class="fas fa-download"></i><br>
+                            Exportar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção Agendamentos -->
+            <div id="appointments" class="section">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <i class="card-icon fas fa-calendar-alt"></i>
+                        <h3 class="card-title">Agendamentos</h3>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Contato</th>
+                                    <th>Serviço</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointmentsTable">
+                                <tr>
+                                    <td colspan="7" class="empty-state">
+                                        <div class="empty-icon"><i class="fas fa-calendar-times"></i></div>
+                                        <p>Nenhum agendamento encontrado</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção Usuários -->
+            <div id="users" class="section">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <i class="card-icon fas fa-users"></i>
+                        <h3 class="card-title">Usuários</h3>
+                    </div>
+                    <div id="users-list"></div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <script>
+        // Verificar se está logado como admin
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        // Carregar dados ao iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+        });
+
+        function loadDashboard() {
+            // Carregar usuários
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            document.getElementById('totalUsers').textContent = users.length;
+            
+            // Carregar agendamentos (localStorage + WhatsApp)
+            let appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            
+            // Simular agendamentos do WhatsApp (será substituído por dados reais)
+            const whatsappSimulado = [
+                {
+                    id: 'wa_' + Date.now(),
+                    name: 'Cliente WhatsApp',
+                    phone: '11999999999',
+                    service: 'WhatsApp',
+                    description: 'Agendamento via bot',
+                    date: new Date().toISOString(),
+                    status: 'pending',
+                    source: 'whatsapp',
+                    userEmail: 'whatsapp-user'
+                }
+            ];
+            
+            // Combinar com agendamentos web
+            const todos = [...appointments, ...whatsappSimulado];
+            appointments = todos;
+            const today = new Date().toDateString();
+            const todayCount = appointments.filter(apt => new Date(apt.date).toDateString() === today).length;
+            const pendingCount = appointments.filter(apt => apt.status === 'pending').length;
+            
+            document.getElementById('totalAppointments').textContent = appointments.length;
+            document.getElementById('todayAppointments').textContent = todayCount;
+            document.getElementById('pendingAppointments').textContent = pendingCount;
+            
+            // Mostrar agendamentos
+            loadAppointments(appointments);
+            
+            // Mostrar usuários
+            loadUsers(users);
+        }
+        
+        function loadAppointments(appointments) {
+            const tbody = document.getElementById('appointmentsTable');
+            
+            if (appointments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><div class="empty-icon"><i class="fas fa-calendar-times"></i></div><p>Nenhum agendamento encontrado</p></td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = appointments.slice(-10).reverse().map(apt => `
+                <tr>
+                    <td>#${apt.id || Date.now()}</td>
+                    <td>${apt.name || 'N/A'}</td>
+                    <td>${apt.phone || 'N/A'}</td>
+                    <td>${apt.service || 'N/A'}</td>
+                    <td>${apt.date ? new Date(apt.date).toLocaleDateString('pt-BR') : 'N/A'}</td>
+                    <td><span class="status-badge status-${apt.status || 'pending'}">${getStatusText(apt.status)}</span></td>
+                    <td>
+                        <button class="btn-action btn-success" onclick="confirmAppointment('${apt.id}')" title="Confirmar">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn-action btn-danger" onclick="cancelAppointment('${apt.id}')" title="Cancelar">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <button class="btn-action btn-info" onclick="viewDetails('${apt.id}')" title="Detalhes">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function loadUsers(users) {
+            const usersList = document.getElementById('users-list');
+            
+            if (users.length === 0) {
+                usersList.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="fas fa-user-slash"></i></div><p>Nenhum usuário cadastrado</p></div>';
+                return;
+            }
+            
+            let html = '<table class="data-table"><thead><tr><th><i class="fas fa-hashtag"></i> ID</th><th><i class="fas fa-envelope"></i> Email</th><th><i class="fas fa-calendar"></i> Cadastro</th></tr></thead><tbody>';
+            users.forEach(user => {
+                html += `<tr><td>#${user.id}</td><td>${user.email}</td><td>${new Date(user.createdAt).toLocaleDateString('pt-BR')}</td></tr>`;
+            });
+            html += '</tbody></table>';
+            usersList.innerHTML = html;
+        }
+        
+        function showSection(sectionName) {
+            // Esconder todas as seções
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remover classe active de todas as abas
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar seção selecionada
+            document.getElementById(sectionName).classList.add('active');
+            
+            // Ativar aba correspondente
+            event.target.classList.add('active');
+        }
+        
+        function exportData() {
+            const data = {
+                users: JSON.parse(localStorage.getItem('users') || '[]'),
+                appointments: JSON.parse(localStorage.getItem('appointments') || '[]'),
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `inkflow-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function getStatusText(status) {
+            switch(status) {
+                case 'confirmed': return 'Confirmado';
+                case 'cancelled': return 'Cancelado';
+                default: return 'Pendente';
+            }
+        }
+        
+        function confirmAppointment(id) {
+            let appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            appointments = appointments.map(apt => 
+                apt.id == id ? {...apt, status: 'confirmed'} : apt
+            );
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+            loadDashboard();
+            alert('✅ Agendamento confirmado!');
+        }
+        
+        function cancelAppointment(id) {
+            if (confirm('❌ Cancelar agendamento #' + id + '?')) {
+                let appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+                appointments = appointments.map(apt => 
+                    apt.id == id ? {...apt, status: 'cancelled'} : apt
+                );
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                loadDashboard();
+                alert('❌ Agendamento cancelado!');
+            }
+        }
+        
+        function viewDetails(id) {
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const apt = appointments.find(a => a.id == id);
+            if (apt) {
+                const details = `
+👤 Cliente: ${apt.name}
+📞 Telefone: ${apt.phone}
+🎨 Serviço: ${apt.service}
+📍 Local: ${apt.location || 'Não informado'}
+📝 Descrição: ${apt.description}
+📅 Data: ${new Date(apt.date).toLocaleString('pt-BR')}
+💰 Orçamento: ${apt.budget || 'Não informado'}
+                `;
+                alert(details);
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

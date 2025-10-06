@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Ink Flow</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .admin-container { max-width: 1400px; margin: 2rem auto; padding: 2rem; }
+        .admin-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--secondary-dark), var(--primary-dark));
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--accent-red);
+        }
+        .admin-title { color: var(--accent-red); margin: 0; font-size: 2rem; }
+        .admin-info { color: var(--text-gray); font-size: 0.9rem; }
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 1.5rem; 
+            margin-bottom: 2rem; 
+        }
+        .stat-card { 
+            background: linear-gradient(135deg, var(--secondary-dark), #2a2a2a);
+            padding: 2rem; 
+            border-radius: 12px; 
+            text-align: center;
+            border: 1px solid #333;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(220, 53, 69, 0.2);
+        }
+        .stat-number { 
+            font-size: 3rem; 
+            font-weight: bold; 
+            color: var(--accent-red);
+            margin-bottom: 0.5rem;
+        }
+        .stat-label { color: var(--text-light); font-size: 1.1rem; font-weight: 500; }
+        .stat-icon { font-size: 2rem; margin-bottom: 1rem; }
+        .data-section { 
+            background: var(--secondary-dark); 
+            padding: 2rem; 
+            border-radius: 12px; 
+            margin-bottom: 2rem;
+            border: 1px solid #333;
+        }
+        .section-title {
+            color: var(--accent-red);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .agendamento-card {
+            background: var(--primary-dark);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-red);
+            transition: all 0.3s ease;
+        }
+        .agendamento-card:hover {
+            background: #1a1a1a;
+            transform: translateX(5px);
+        }
+        .agendamento-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .cliente-nome { font-size: 1.2rem; font-weight: bold; color: var(--text-light); }
+        .agendamento-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .status-pendente { background: #ffc107; color: #000; }
+        .status-confirmado { background: #28a745; color: white; }
+        .status-cancelado { background: #dc3545; color: white; }
+        .status-concluido { background: #6c757d; color: white; }
+        .agendamento-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .detail-label { font-size: 0.8rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .detail-value { color: var(--text-light); font-weight: 500; }
+        .agendamento-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-confirmar { background: #28a745; color: white; }
+        .btn-confirmar:hover { background: #218838; }
+        .btn-cancelar { background: #dc3545; color: white; }
+        .btn-cancelar:hover { background: #c82333; }
+        .btn-concluir { background: #6c757d; color: white; }
+        .btn-concluir:hover { background: #5a6268; }
+        .btn-logout { 
+            background: #dc3545; 
+            color: white; 
+            padding: 0.8rem 1.5rem; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-logout:hover { background: #c82333; transform: translateY(-2px); }
+        .no-data {
+            text-align: center;
+            color: var(--text-gray);
+            padding: 3rem;
+            font-style: italic;
+        }
+        .loading {
+            text-align: center;
+            color: var(--text-gray);
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../index.html" class="logo">INK FLOW</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="admin-container">
+            <div class="admin-header">
+                <div>
+                    <h1 class="admin-title">🎨 Dashboard Administrativo</h1>
+                    <div class="admin-info" id="admin-info">Carregando informações...</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">🚪 Sair</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-number" id="total-agendamentos">0</div>
+                    <div class="stat-label">Total Agendamentos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-number" id="total-clientes">0</div>
+                    <div class="stat-label">Total Clientes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏰</div>
+                    <div class="stat-number" id="agendamentos-hoje">0</div>
+                    <div class="stat-label">Agendamentos Hoje</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-number" id="agendamentos-pendentes">0</div>
+                    <div class="stat-label">Pendentes</div>
+                </div>
+            </div>
+
+            <div class="data-section">
+                <h3 class="section-title">
+                    📋 Gerenciar Agendamentos
+                </h3>
+                <div id="loading" class="loading">Carregando agendamentos...</div>
+                <div id="agendamentos-list"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="../assets/js/supabase-agendamento.js"></script>
+    <script>
+        // Verificar se é admin
+        const adminData = JSON.parse(localStorage.getItem('adminLoginData') || '{}');
+        if (!adminData.isAdmin) {
+            alert('Acesso negado!');
+            window.location.href = 'login.html';
+        }
+
+        // Mostrar informações do admin
+        document.getElementById('admin-info').textContent = `Logado como: ${adminData.user?.name || 'Admin'} | Último acesso: ${new Date().toLocaleString()}`;
+
+        async function carregarDados() {
+            try {
+                document.getElementById('loading').style.display = 'block';
+                
+                // Carregar agendamentos
+                const result = await window.supabaseAgendamento.listarAgendamentos();
+                const agendamentos = result.data || [];
+                
+                // Estatísticas
+                document.getElementById('total-agendamentos').textContent = agendamentos.length;
+                
+                const hoje = new Date().toISOString().split('T')[0];
+                const agendamentosHoje = agendamentos.filter(a => a.data_agendamento === hoje);
+                document.getElementById('agendamentos-hoje').textContent = agendamentosHoje.length;
+                
+                const pendentes = agendamentos.filter(a => a.status === 'pendente');
+                document.getElementById('agendamentos-pendentes').textContent = pendentes.length;
+                
+                // Simular total de clientes (seria uma consulta separada)
+                document.getElementById('total-clientes').textContent = Math.max(10, agendamentos.length);
+                
+                document.getElementById('loading').style.display = 'none';
+                
+                // Mostrar agendamentos
+                mostrarAgendamentos(agendamentos);
+
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                document.getElementById('loading').innerHTML = '❌ Erro ao carregar dados';
+            }
+        }
+
+        function mostrarAgendamentos(agendamentos) {
+            const agendamentosList = document.getElementById('agendamentos-list');
+            
+            if (agendamentos.length === 0) {
+                agendamentosList.innerHTML = '<div class="no-data">Nenhum agendamento encontrado</div>';
+                return;
+            }
+            
+            agendamentosList.innerHTML = agendamentos.map(a => `
+                <div class="agendamento-card">
+                    <div class="agendamento-header">
+                        <div class="cliente-nome">${a.nome_cliente}</div>
+                        <div class="agendamento-status status-${a.status}">
+                            ${a.status.charAt(0).toUpperCase() + a.status.slice(1)}
+                        </div>
+                    </div>
+                    
+                    <div class="agendamento-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Serviço</span>
+                            <span class="detail-value">${a.servico}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Data</span>
+                            <span class="detail-value">${new Date(a.data_agendamento).toLocaleDateString('pt-BR')}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Horário</span>
+                            <span class="detail-value">${a.horario}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Email</span>
+                            <span class="detail-value">${a.email}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Telefone</span>
+                            <span class="detail-value">${a.telefone}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Idade</span>
+                            <span class="detail-value">${a.idade} anos</span>
+                        </div>
+                    </div>
+                    
+                    ${a.descricao ? `
+                        <div class="detail-item" style="margin-bottom: 1rem;">
+                            <span class="detail-label">Descrição</span>
+                            <span class="detail-value">${a.descricao}</span>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="agendamento-actions">
+                        ${a.status === 'pendente' ? `
+                            <button class="btn btn-confirmar" onclick="alterarStatus(${a.id}, 'confirmado')">
+                                ✅ Confirmar
+                            </button>
+                        ` : ''}
+                        
+                        ${a.status === 'confirmado' ? `
+                            <button class="btn btn-concluir" onclick="alterarStatus(${a.id}, 'concluido')">
+                                ✓ Concluir
+                            </button>
+                        ` : ''}
+                        
+                        ${a.status !== 'cancelado' && a.status !== 'concluido' ? `
+                            <button class="btn btn-cancelar" onclick="alterarStatus(${a.id}, 'cancelado')">
+                                ❌ Cancelar
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function alterarStatus(id, novoStatus) {
+            try {
+                await window.supabaseAgendamento.alterarStatusAgendamento(id, novoStatus);
+                alert(`Agendamento ${novoStatus} com sucesso!`);
+                carregarDados(); // Recarregar dados
+            } catch (error) {
+                console.error('Erro ao alterar status:', error);
+                alert('Erro ao alterar status: ' + error.message);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('adminLoginData');
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'login.html';
+        }
+
+        // Carregar dados ao iniciar
+        carregarDados();
+        
+        // Recarregar dados a cada 30 segundos
+        setInterval(carregarDados, 30000);
+    </script>
+</body>
+</html>

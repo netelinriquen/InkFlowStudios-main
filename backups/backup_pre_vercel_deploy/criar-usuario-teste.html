@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Criar Usuário Teste</title>
+</head>
+<body>
+    <h1>Criar Usuário de Teste</h1>
+    
+    <form id="create-form">
+        <input type="text" id="name" placeholder="Nome" value="Usuario Teste">
+        <input type="email" id="email" placeholder="Email" value="teste@gmail.com">
+        <input type="password" id="password" placeholder="Senha" value="123456">
+        <button type="submit">Criar Usuário</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <script>
+        document.getElementById('create-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch('http://localhost:3001/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                
+                const result = await response.json();
+                document.getElementById('result').innerHTML = 
+                    '<h3>Resultado:</h3><pre>' + JSON.stringify(result, null, 2) + '</pre>';
+                    
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<h3>Erro:</h3><pre>' + error.message + '</pre>';
+            }
+        });
+    </script>
+</body>
+</html>

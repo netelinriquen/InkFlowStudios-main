@@ -45,16 +45,12 @@ header {
 
 nav {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
-}
-
-.logo {
-    margin-right: auto;
-    padding-right: 3rem;
+    position: relative;
 }
 
 .logo {
@@ -62,14 +58,15 @@ nav {
     font-size: 2rem;
     color: var(--accent-red);
     text-decoration: none;
-    margin-right: auto;
-    padding-right: 3rem;
+    position: absolute;
+    left: 2rem;
 }
 
 .nav-links {
     display: flex;
     list-style: none;
     gap: 2rem;
+    margin-left: 8rem;
 }
 
 .nav-links a {
@@ -933,12 +930,7 @@ table td {
     position: relative;
 }
 
-#translate-btn {
-    position: absolute;
-    right: -60px;
-    top: 50%;
-    transform: translateY(-50%);
-}
+
 
 .login-btn {
     color: var(--text-light);

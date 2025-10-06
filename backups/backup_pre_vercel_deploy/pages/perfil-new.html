@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Ink Flow</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="icon" type="image/png" href="../assets/images/favicon-round.png">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../index.html" class="logo">INK FLOW</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="sobre.html">Sobre Nós</a></li>
+                <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="servicos.html">Serviços</a></li>
+                <li><a href="agendamento.html">Agendamento</a></li>
+                <li><a href="contato.html">Contato</a></li>
+            </ul>
+            <div style="position: absolute; right: 20px; display: flex; align-items: center; gap: 2rem;">
+                <a href="perfil.html" style="color: var(--text-light); text-decoration: none;">Perfil</a>
+            </div>
+        </nav>
+    </header>
+
+    <main style="padding: 2rem; max-width: 935px; margin: 4rem auto 0 auto;">
+        <!-- Header do Perfil -->
+        <div style="display: flex; align-items: center; gap: 4rem; margin-bottom: 3rem; padding: 2rem 0; border-bottom: 1px solid #333;">
+            <!-- Avatar -->
+            <div style="flex-shrink: 0; position: relative;">
+                <div id="profile-avatar" style="width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(45deg, var(--accent-red), #ff6b6b); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; position: relative;" onclick="changeAvatar()">
+                    <svg id="default-avatar" width="80" height="80" viewBox="0 0 24 24" fill="white">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                    <img id="user-avatar" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                </div>
+                <div style="position: absolute; bottom: 10px; right: 10px; width: 30px; height: 30px; background: var(--accent-red); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid var(--primary-dark);" onclick="changeAvatar()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                    </svg>
+                </div>
+                <input type="file" id="system-file-input" accept="image/*" multiple style="display: none;">
+            </div>
+            
+            <!-- Info do Perfil -->
+            <div style="flex: 1;">
+                <div style="display: flex; align-items: center; gap: 2rem; margin-bottom: 1.5rem;">
+                    <h1 id="profile-username" style="font-size: 1.8rem; font-weight: 300; color: var(--text-light); margin: 0;">usuario</h1>
+                    <button onclick="editProfile()" style="background: none; border: 1px solid #333; color: var(--text-light); padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">Editar perfil</button>
+                    <div style="position: relative;">
+                        <button onclick="toggleSettings()" style="background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 1.2rem;" title="Configurações">⚙️</button>
+                        <div id="settings-dropdown" style="display: none; position: absolute; top: 100%; right: 0; background: var(--secondary-dark); border: 1px solid #333; border-radius: 8px; min-width: 150px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 100;">
+                            <button onclick="logout()" style="width: 100%; background: none; border: none; color: var(--text-light); padding: 0.75rem 1rem; text-align: left; cursor: pointer; border-radius: 8px 8px 0 0;" onmouseover="this.style.background='var(--primary-dark)'" onmouseout="this.style.background='none'">Sair</button>
+                            <button onclick="changePassword()" style="width: 100%; background: none; border: none; color: var(--text-light); padding: 0.75rem 1rem; text-align: left; cursor: pointer;" onmouseover="this.style.background='var(--primary-dark)'" onmouseout="this.style.background='none'">Alterar Senha</button>
+                            <button onclick="deleteAccount()" style="width: 100%; background: none; border: none; color: var(--accent-red); padding: 0.75rem 1rem; text-align: left; cursor: pointer; border-radius: 0 0 8px 8px;" onmouseover="this.style.background='var(--primary-dark)'" onmouseout="this.style.background='none'">Excluir Conta</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats -->
+                <div style="display: flex; gap: 2rem; margin-bottom: 1.5rem;">
+                    <span style="color: var(--text-light);"><strong>3</strong> agendamentos</span>
+                    <span style="color: var(--text-light);"><strong>12</strong> sessões</span>
+                    <span style="color: var(--text-light);"><strong>2</strong> tatuagens</span>
+                </div>
+                
+                <!-- Bio -->
+                <div>
+                    <p id="profile-name" style="color: var(--text-light); font-weight: 600; margin: 0 0 0.5rem 0;">Nome Completo</p>
+                    <p id="profile-bio" style="color: var(--text-gray); margin: 0; line-height: 1.4;">Cliente Ink Flow ✨<br>📍 São Paulo, SP</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de Seleção de Arquivos -->
+        <div id="file-picker-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center;">
+            <div style="background: var(--primary-dark); border-radius: 12px; width: 90%; max-width: 500px; max-height: 80vh; overflow: hidden; animation: modalSlideIn 0.3s ease;">
+                <!-- Header -->
+                <div style="padding: 1rem 1.5rem; border-bottom: 1px solid #333; position: relative;">
+                    <h3 style="color: var(--text-light); margin: 0; text-align: center;">Alterar foto do perfil</h3>
+                    <button onclick="closeFilePicker()" style="position: absolute; top: 1rem; right: 1.5rem; background: none; border: none; color: var(--text-gray); font-size: 1.5rem; cursor: pointer;">×</button>
+                </div>
+                
+                <!-- Tabs -->
+                <div style="display: flex; border-bottom: 1px solid #333;">
+                    <button id="tab-clipboard" class="picker-tab active" onclick="switchTab('clipboard')" style="flex: 1; background: none; border: none; color: var(--text-gray); padding: 1rem; cursor: pointer; border-bottom: 2px solid transparent;">
+                        📋 Área de Transferência
+                    </button>
+                    <button id="tab-uploaded" class="picker-tab" onclick="switchTab('uploaded')" style="flex: 1; background: none; border: none; color: var(--text-gray); padding: 1rem; cursor: pointer; border-bottom: 2px solid transparent;">
+                        📁 Carregadas
+                    </button>
+                </div>
+                
+                <!-- Conteúdo -->
+                <div style="padding: 1.5rem; min-height: 200px; max-height: 300px;">
+                    <div id="picker-content" style="overflow-x: auto; overflow-y: hidden; padding-bottom: 10px;">
+                        <p style="color: var(--text-gray); text-align: center;">Carregando...</p>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <div style="padding: 1rem 1.5rem; border-top: 1px solid #333; text-align: center;">
+                    <button onclick="openSystemPicker()" style="background: var(--accent-red); color: white; border: none; padding: 0.75rem 2rem; border-radius: 8px; cursor: pointer; font-weight: 500; width: 100%;">
+                        Exibir todos os arquivos
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <style>
+        .picker-tab.active {
+            color: var(--text-light) !important;
+            border-bottom-color: var(--accent-red) !important;
+        }
+        
+        @keyframes modalSlideIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+
+    <script src="../assets/js/login-button-fix.js"></script>
+    <script>
+        let clipboardImages = [];
+        let uploadedImages = [];
+        let currentTab = 'clipboard';
+        
+        function changeAvatar() {
+            document.getElementById('file-picker-modal').style.display = 'flex';
+            setTimeout(() => loadClipboardImages(), 100);
+        }
+        
+        function closeFilePicker() {
+            document.getElementById('file-picker-modal').style.display = 'none';
+        }
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.picker-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            
+            if (tab === 'clipboard') {
+                loadClipboardImages();
+            } else {
+                displayUploadedImages();
+            }
+        }
+        
+        async function loadClipboardImages() {
+            const content = document.getElementById('picker-content');
+            content.innerHTML = '<p style="color: var(--text-gray); text-align: center; padding: 2rem;">Verificando clipboard...</p>';
+            
+            try {
+                const items = await navigator.clipboard.read();
+                clipboardImages = [];
+                
+                for (const item of items) {
+                    for (const type of item.types) {
+                        if (type.startsWith('image/')) {
+                            const blob = await item.getType(type);
+                            const url = URL.createObjectURL(blob);
+                            clipboardImages.push({ url, blob });
+                        }
+                    }
+                }
+                
+                if (clipboardImages.length > 0) {
+                    content.innerHTML = `
+                        <div style="display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px;">
+                            ${clipboardImages.map((img, index) => 
+                                `<div onclick="selectImage('${img.url}', ${index}, 'clipboard')" style="min-width: 120px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                                    <img src="${img.url}" style="width: 120px; height: 90px; object-fit: cover; border-radius: 8px; border: 2px solid #333; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--accent-red)'" onmouseout="this.style.borderColor='#333'">
+                                    <div style="margin-top: 5px; font-size: 12px; color: #bbb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">clipboard-${index + 1}.jpg</div>
+                                </div>`
+                            ).join('')}
+                        </div>
+                    `;
+                } else {
+                    content.innerHTML = '<p style="color: var(--text-gray); text-align: center; padding: 2rem;">Nenhuma imagem copiada encontrada</p>';
+                }
+            } catch (err) {
+                content.innerHTML = '<p style="color: var(--text-gray); text-align: center; padding: 2rem;">Copie uma imagem primeiro</p>';
+            }
+        }
+        
+        function displayUploadedImages() {
+            const content = document.getElementById('picker-content');
+            if (uploadedImages.length === 0) {
+                content.innerHTML = '<p style="color: var(--text-gray); text-align: center; padding: 2rem;">Nenhuma imagem carregada</p>';
+                return;
+            }
+            
+            content.innerHTML = `
+                <div style="display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px;">
+                    ${uploadedImages.map((img, index) => 
+                        `<div onclick="selectImage('${img.url}', ${index}, 'uploaded')" style="min-width: 120px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                            <img src="${img.url}" style="width: 120px; height: 90px; object-fit: cover; border-radius: 8px; border: 2px solid #333; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--accent-red)'" onmouseout="this.style.borderColor='#333'">
+                            <div style="margin-top: 5px; font-size: 12px; color: #bbb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${img.file.name}</div>
+                        </div>`
+                    ).join('')}
+                </div>
+            `;
+        }
+        
+        function selectImage(url, index, source) {
+            localStorage.setItem('userAvatar', url);
+            document.getElementById('user-avatar').src = url;
+            document.getElementById('user-avatar').style.display = 'block';
+            document.getElementById('default-avatar').style.display = 'none';
+            
+            const avatar = document.getElementById('profile-avatar');
+            avatar.style.transform = 'scale(1.05)';
+            setTimeout(() => avatar.style.transform = 'scale(1)', 200);
+            
+            // Atualizar ícone da home
+            if (window.updateLoginButton) {
+                window.updateLoginButton();
+            }
+            
+            closeFilePicker();
+        }
+        
+        function openSystemPicker() {
+            document.getElementById('system-file-input').click();
+        }
+        
+        document.getElementById('system-file-input').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            uploadedImages = [];
+            
+            files.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const url = URL.createObjectURL(file);
+                    uploadedImages.push({ url, file });
+                }
+            });
+            
+            switchTab('uploaded');
+        });
+        
+        function loadAvatar() {
+            const savedAvatar = localStorage.getItem('userAvatar');
+            if (savedAvatar) {
+                document.getElementById('user-avatar').src = savedAvatar;
+                document.getElementById('user-avatar').style.display = 'block';
+                document.getElementById('default-avatar').style.display = 'none';
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginData = localStorage.getItem('loginData') || sessionStorage.getItem('loginData');
+            if (!loginData) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = JSON.parse(loginData).user;
+            document.getElementById('profile-username').textContent = user.email.split('@')[0];
+            document.getElementById('profile-name').textContent = user.name || 'Nome não informado';
+            
+            loadAvatar();
+        });
+        
+        function editProfile() {
+            alert('Funcionalidade de edição será implementada em breve!');
+        }
+        
+        function toggleSettings() {
+            const dropdown = document.getElementById('settings-dropdown');
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function changePassword() {
+            alert('Funcionalidade de alterar senha será implementada em breve!');
+            document.getElementById('settings-dropdown').style.display = 'none';
+        }
+        
+        function deleteAccount() {
+            if (confirm('Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.')) {
+                alert('Funcionalidade de exclusão de conta será implementada em breve!');
+            }
+            document.getElementById('settings-dropdown').style.display = 'none';
+        }
+        
+        function logout() {
+            if (confirm('Deseja realmente sair?')) {
+                const users = localStorage.getItem('users');
+                
+                localStorage.removeItem('loginData');
+                sessionStorage.removeItem('loginData');
+                localStorage.removeItem('userLoggedIn');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('adminLoggedIn');
+                localStorage.removeItem('adminLoginData');
+                
+                if (users) {
+                    localStorage.setItem('users', users);
+                }
+                
+                window.location.href = '../index.html';
+            }
+        }
+    </script>
+</body>
+</html>

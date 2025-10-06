@@ -1,0 +1,46 @@
+@startuml InkFlowStudios
+
+class Usuario {
+  - id: numero
+  - nome: texto
+  - email: texto
+  + fazerLogin(): booleano
+}
+
+class Cliente {
+  - id: numero
+  - nome: texto
+  - telefone: texto
+  - email: texto
+}
+
+class Artista {
+  - id: numero
+  - nome: texto
+  - especialidades: texto[]
+}
+
+class Agendamento {
+  - id: numero
+  - clienteId: numero
+  - artistaId: numero
+  - data: texto
+  - horario: texto
+  - servico: texto
+  - status: texto
+}
+
+class Administrador {
+  + gerenciarClientes(): vazio
+  + gerenciarArtistas(): vazio
+  + gerenciarAgendamentos(): vazio
+}
+
+Usuario ||--o{ Agendamento
+Cliente ||--o{ Agendamento
+Artista ||--o{ Agendamento
+Administrador --> Cliente
+Administrador --> Artista
+Administrador --> Agendamento
+
+@enduml

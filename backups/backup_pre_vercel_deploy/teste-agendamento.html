@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Agendamento SQL</title>
+</head>
+<body>
+    <h1>Teste Agendamento SQL Server</h1>
+    
+    <form id="test-form">
+        <input type="text" id="name" placeholder="Nome" value="Cliente Teste">
+        <input type="tel" id="phone" placeholder="Telefone" value="(11) 99999-9999">
+        <input type="email" id="email" placeholder="Email" value="teste@gmail.com">
+        <input type="number" id="age" placeholder="Idade" value="25">
+        <select id="service">
+            <option value="tatuagem-artistica">Tatuagem Artística</option>
+        </select>
+        <input type="date" id="date" value="2025-01-15">
+        <input type="time" id="time" value="14:00">
+        <button type="submit">Testar Agendamento</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <script>
+        document.getElementById('test-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const appointmentData = {
+                clientName: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                age: document.getElementById('age').value,
+                service: document.getElementById('service').value,
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value,
+                artist: 'Sem preferência',
+                size: 'media',
+                location: 'braco',
+                description: 'Teste de agendamento',
+                budget: '300-600',
+                firstTattoo: false,
+                price: 0
+            };
+            
+            try {
+                const response = await fetch('http://localhost:3001/appointments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(appointmentData)
+                });
+                
+                const result = await response.json();
+                document.getElementById('result').innerHTML = 
+                    '<h3>Resultado:</h3><pre>' + JSON.stringify(result, null, 2) + '</pre>';
+                    
+                if (result.success) {
+                    alert('✅ AGENDAMENTO FUNCIONANDO! Dados salvos no SQL Server.');
+                }
+                    
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<h3>Erro:</h3><pre>' + error.message + '</pre>';
+            }
+        });
+    </script>
+</body>
+</html>

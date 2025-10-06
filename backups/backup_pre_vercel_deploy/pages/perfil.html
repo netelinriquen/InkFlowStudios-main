@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Ink Flow</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="icon" type="image/png" href="../assets/images/favicon-round.png">
+    <link rel="shortcut icon" href="../assets/images/favicon-round.png">
+    <link rel="apple-touch-icon" href="../assets/images/favicon-round.png">
+    <style>
+        .profile-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        
+        .profile-card {
+            background: var(--secondary-dark);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-info {
+            display: grid;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: var(--primary-dark);
+            border-radius: 12px;
+            border: 1px solid var(--tertiary-dark);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .info-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.2);
+            border-color: var(--accent-red);
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: var(--text-gray);
+        }
+        
+        .info-value {
+            color: var(--text-light);
+        }
+        
+        .danger-zone {
+            background: linear-gradient(145deg, #2d1b1b, #1a1010);
+            border: 2px solid #dc3545;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+            animation: pulse-border 3s infinite;
+        }
+        
+        @keyframes pulse-border {
+            0%, 100% { border-color: #dc3545; }
+            50% { border-color: #ff6b7a; }
+        }
+        
+        .danger-zone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(220, 53, 69, 0.1), transparent);
+            animation: shine 4s infinite;
+        }
+        
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .danger-title {
+            color: #dc3545;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.5);
+        }
+        
+        .btn-secondary {
+            background: var(--gradient-red);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-right: 1rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.5);
+        }
+        
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../index.html" class="logo">INK FLOW</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="sobre.html">Sobre Nós</a></li>
+                <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="servicos.html">Serviços</a></li>
+                <li><a href="agendamento.html">Agendamento</a></li>
+                <li><a href="contato.html">Contato</a></li>
+            </ul>
+            <a href="login.html" style="color: var(--text-light); text-decoration: none; padding: 0.5rem 1rem; border: none; border-radius: 4px; transition: all 0.3s ease;">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="profile-container">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <h1 style="color: var(--accent-red);">Meu Perfil</h1>
+                </div>
+                
+                <div id="profile-content">
+                    <div class="loading" style="text-align: center; padding: 2rem;">
+                        Carregando perfil...
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn-secondary" onclick="window.location.href='editar-perfil.html'">
+                        ✏️ Editar Perfil
+                    </button>
+                    <button class="btn-secondary" onclick="window.location.href='meus-agendamentos.html'">
+                        Meus Agendamentos
+                    </button>
+                    <button class="btn-secondary" onclick="window.location.href='agendamento.html'">
+                        Novo Agendamento
+                    </button>
+                </div>
+                
+                <div class="danger-zone">
+                    <div class="danger-title">⚠️ Zona de Perigo</div>
+                    <p style="color: var(--text-gray); margin-bottom: 1rem;">
+                        Esta ação é irreversível. Ao deletar sua conta, todos os seus dados e agendamentos serão permanentemente removidos.
+                    </p>
+                    <button class="btn-danger" onclick="deleteAccount()">
+                        Deletar Minha Conta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div style="text-align: center; color: var(--text-gray); font-size: 0.9rem;">
+            <p>&copy; 2025 Ink Flow Estúdio de Tatuagem. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        function loadProfile() {
+            const profileContent = document.getElementById('profile-content');
+            
+            if (!window.authSystem || !window.authSystem.isLoggedIn()) {
+                profileContent.innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <p>Você precisa fazer login para ver seu perfil.</p>
+                        <a href="login.html" class="btn" style="display: inline-block; margin-top: 1rem;">
+                            Fazer Login
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            const user = window.authSystem.getCurrentUser();
+            if (!user) {
+                profileContent.innerHTML = '<p>Erro ao carregar dados do usuário.</p>';
+                return;
+            }
+            
+            profileContent.innerHTML = `
+                <div class="profile-info">
+                    <div class="info-item" onclick="editField('nome')">
+                        <div>
+                            <span class="info-label">👤 Nome:</span>
+                            <div class="info-value">${user.nome || user.name || 'Não informado'}</div>
+                        </div>
+                        <span style="color: var(--accent-red); font-size: 1.2rem;">✏️</span>
+                    </div>
+                    <div class="info-item" onclick="editField('email')">
+                        <div>
+                            <span class="info-label">📧 Email:</span>
+                            <div class="info-value">${user.email}</div>
+                        </div>
+                        <span style="color: var(--accent-red); font-size: 1.2rem;">✏️</span>
+                    </div>
+                    <div class="info-item">
+                        <div>
+                            <span class="info-label">📅 Membro desde:</span>
+                            <div class="info-value">${user.criado_em ? new Date(user.criado_em).toLocaleDateString('pt-BR') : 'Não informado'}</div>
+                        </div>
+                        <span style="color: var(--text-gray); font-size: 1.2rem;">🔒</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function editField(field) {
+            if (field === 'nome') {
+                const newName = prompt('Digite o novo nome:');
+                if (newName && newName.trim()) {
+                    alert('Nome atualizado! (Funcionalidade em desenvolvimento)');
+                    loadProfile();
+                }
+            } else if (field === 'email') {
+                alert('Para alterar o email, entre em contato com o suporte.');
+            }
+        }
+        
+        async function deleteAccount() {
+            const user = window.authSystem.getCurrentUser();
+            if (!user || !user.email) {
+                alert('Erro ao obter dados do usuário.');
+                return;
+            }
+            
+            if (!confirm('⚠️ ATENÇÃO: Você está prestes a deletar sua conta permanentemente.\\n\\nEsta ação irá:\\n• Remover todos os seus dados\\n• Cancelar todos os seus agendamentos\\n• Não poderá ser desfeita\\n\\nTem certeza que deseja continuar?')) {
+                return;
+            }
+            
+            const confirmText = prompt('Para confirmar, digite "DELETAR" (em maiúsculas):');
+            if (confirmText !== 'DELETAR') {
+                alert('Operação cancelada.');
+                return;
+            }
+            
+            if (!confirm('ÚLTIMA CONFIRMAÇÃO:\\n\\nSua conta será deletada PERMANENTEMENTE.\\n\\nEsta é sua última chance de cancelar.\\n\\nConfirma a exclusão?')) {
+                return;
+            }
+            
+            try {
+                const { createClient } = supabase;
+                const supabaseClient = createClient(
+                    'https://tvccuvzcmnrqtrakudju.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
+                );
+                
+                await supabaseClient
+                    .from('agendamentos')
+                    .delete()
+                    .eq('email', user.email);
+                
+                const { error } = await supabaseClient
+                    .from('usuarios')
+                    .delete()
+                    .eq('email', user.email);
+                
+                if (error) throw error;
+                
+                alert('Conta deletada com sucesso. Você será redirecionado para a página inicial.');
+                
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                window.location.href = '../index.html';
+                
+            } catch (error) {
+                alert('Erro ao deletar conta: ' + error.message);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfile();
+        });
+    </script>
+</body>
+</html>
