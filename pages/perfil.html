@@ -36,9 +36,19 @@
         .info-item {
             display: flex;
             justify-content: space-between;
-            padding: 1rem;
+            align-items: center;
+            padding: 1.5rem;
             background: var(--primary-dark);
-            border-radius: 8px;
+            border-radius: 12px;
+            border: 1px solid var(--tertiary-dark);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .info-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.2);
+            border-color: var(--accent-red);
         }
         
         .info-label {
@@ -51,11 +61,35 @@
         }
         
         .danger-zone {
-            background: #2d1b1b;
-            border: 1px solid #dc3545;
-            border-radius: 10px;
-            padding: 1.5rem;
+            background: linear-gradient(145deg, #2d1b1b, #1a1010);
+            border: 2px solid #dc3545;
+            border-radius: 15px;
+            padding: 2rem;
             margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+            animation: pulse-border 3s infinite;
+        }
+        
+        @keyframes pulse-border {
+            0%, 100% { border-color: #dc3545; }
+            50% { border-color: #ff6b7a; }
+        }
+        
+        .danger-zone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(220, 53, 69, 0.1), transparent);
+            animation: shine 4s infinite;
+        }
+        
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
         
         .danger-title {
@@ -65,33 +99,38 @@
         }
         
         .btn-danger {
-            background: #dc3545;
+            background: linear-gradient(135deg, #dc3545, #c82333);
             color: white;
             border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 5px;
+            padding: 1rem 2rem;
+            border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
         }
         
         .btn-danger:hover {
-            background: #c82333;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.5);
         }
         
         .btn-secondary {
-            background: #6c757d;
+            background: var(--gradient-red);
             color: white;
             border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 5px;
+            padding: 1rem 2rem;
+            border-radius: 25px;
             cursor: pointer;
             margin-right: 1rem;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
         }
         
         .btn-secondary:hover {
-            background: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.5);
         }
         
         .actions {
@@ -114,7 +153,7 @@
                 <li><a href="agendamento.html">Agendamento</a></li>
                 <li><a href="contato.html">Contato</a></li>
             </ul>
-            <a href="login.html" style="color: var(--text-light); text-decoration: none; padding: 0.5rem 1rem; border: 1px solid var(--accent-red); border-radius: 4px; transition: all 0.3s ease;">Login</a>
+            <a href="login.html" style="color: var(--text-light); text-decoration: none; padding: 0.5rem 1rem; border: none; border-radius: 4px; transition: all 0.3s ease;">Login</a>
         </nav>
     </header>
 
@@ -168,7 +207,6 @@
         function loadProfile() {
             const profileContent = document.getElementById('profile-content');
             
-            // Verificar se usuário está logado
             if (!window.authSystem || !window.authSystem.isLoggedIn()) {
                 profileContent.innerHTML = `
                     <div style="text-align: center; padding: 2rem;">
@@ -189,20 +227,41 @@
             
             profileContent.innerHTML = `
                 <div class="profile-info">
-                    <div class="info-item">
-                        <span class="info-label">Nome:</span>
-                        <span class="info-value">${user.nome || user.name || 'Não informado'}</span>
+                    <div class="info-item" onclick="editField('nome')">
+                        <div>
+                            <span class="info-label">👤 Nome:</span>
+                            <div class="info-value">${user.nome || user.name || 'Não informado'}</div>
+                        </div>
+                        <span style="color: var(--accent-red); font-size: 1.2rem;">✏️</span>
+                    </div>
+                    <div class="info-item" onclick="editField('email')">
+                        <div>
+                            <span class="info-label">📧 Email:</span>
+                            <div class="info-value">${user.email}</div>
+                        </div>
+                        <span style="color: var(--accent-red); font-size: 1.2rem;">✏️</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Email:</span>
-                        <span class="info-value">${user.email}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Membro desde:</span>
-                        <span class="info-value">${user.criado_em ? new Date(user.criado_em).toLocaleDateString('pt-BR') : 'Não informado'}</span>
+                        <div>
+                            <span class="info-label">📅 Membro desde:</span>
+                            <div class="info-value">${user.criado_em ? new Date(user.criado_em).toLocaleDateString('pt-BR') : 'Não informado'}</div>
+                        </div>
+                        <span style="color: var(--text-gray); font-size: 1.2rem;">🔒</span>
                     </div>
                 </div>
             `;
+        }
+        
+        function editField(field) {
+            if (field === 'nome') {
+                const newName = prompt('Digite o novo nome:');
+                if (newName && newName.trim()) {
+                    alert('Nome atualizado! (Funcionalidade em desenvolvimento)');
+                    loadProfile();
+                }
+            } else if (field === 'email') {
+                alert('Para alterar o email, entre em contato com o suporte.');
+            }
         }
         
         async function deleteAccount() {
@@ -212,38 +271,32 @@
                 return;
             }
             
-            // Primeira confirmação
-            if (!confirm('⚠️ ATENÇÃO: Você está prestes a deletar sua conta permanentemente.\n\nEsta ação irá:\n• Remover todos os seus dados\n• Cancelar todos os seus agendamentos\n• Não poderá ser desfeita\n\nTem certeza que deseja continuar?')) {
+            if (!confirm('⚠️ ATENÇÃO: Você está prestes a deletar sua conta permanentemente.\\n\\nEsta ação irá:\\n• Remover todos os seus dados\\n• Cancelar todos os seus agendamentos\\n• Não poderá ser desfeita\\n\\nTem certeza que deseja continuar?')) {
                 return;
             }
             
-            // Segunda confirmação
             const confirmText = prompt('Para confirmar, digite "DELETAR" (em maiúsculas):');
             if (confirmText !== 'DELETAR') {
                 alert('Operação cancelada.');
                 return;
             }
             
-            // Terceira confirmação
-            if (!confirm('ÚLTIMA CONFIRMAÇÃO:\n\nSua conta será deletada PERMANENTEMENTE.\n\nEsta é sua última chance de cancelar.\n\nConfirma a exclusão?')) {
+            if (!confirm('ÚLTIMA CONFIRMAÇÃO:\\n\\nSua conta será deletada PERMANENTEMENTE.\\n\\nEsta é sua última chance de cancelar.\\n\\nConfirma a exclusão?')) {
                 return;
             }
             
             try {
-                // Usar Supabase diretamente
                 const { createClient } = supabase;
                 const supabaseClient = createClient(
                     'https://tvccuvzcmnrqtrakudju.supabase.co',
                     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Y2N1dnpjbW5ycXRyYWt1ZGp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MzczNzQsImV4cCI6MjA3NTIxMzM3NH0.802UvU_k3qqyBQX_vRMiN7ofJy1wTKfZU1dk8UPybug'
                 );
                 
-                // Deletar agendamentos primeiro
                 await supabaseClient
                     .from('agendamentos')
                     .delete()
                     .eq('email', user.email);
                 
-                // Deletar usuário
                 const { error } = await supabaseClient
                     .from('usuarios')
                     .delete()
@@ -253,11 +306,9 @@
                 
                 alert('Conta deletada com sucesso. Você será redirecionado para a página inicial.');
                 
-                // Limpar dados de login
                 localStorage.clear();
                 sessionStorage.clear();
                 
-                // Redirecionar para home
                 window.location.href = '../index.html';
                 
             } catch (error) {
@@ -265,7 +316,6 @@
             }
         }
         
-        // Carregar perfil quando a página carregar
         document.addEventListener('DOMContentLoaded', function() {
             loadProfile();
         });

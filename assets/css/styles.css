@@ -53,10 +53,17 @@ nav {
 }
 
 .logo {
+    margin-right: auto;
+    padding-right: 3rem;
+}
+
+.logo {
     font-family: 'Bebas Neue', cursive;
     font-size: 2rem;
     color: var(--accent-red);
     text-decoration: none;
+    margin-right: auto;
+    padding-right: 3rem;
 }
 
 .nav-links {
@@ -76,15 +83,67 @@ nav {
     color: var(--accent-red);
 }
 
+.profile-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
 .profile-icon {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
+    color: var(--text-light);
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    padding: 8px;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: var(--secondary-dark);
+    border: 1px solid var(--tertiary-dark);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 1000;
+    min-width: 120px;
+    margin-top: 5px;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 10px 15px;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background: var(--accent-red);
+    color: white;
+}
+
+.dropdown-item:first-child {
+    border-radius: 8px 8px 0 0;
+}
+
+.dropdown-item:last-child {
+    border-radius: 0 0 8px 8px;
 }
 
 .profile-icon:hover {
     transform: scale(1.1);
+    color: var(--accent-red);
 }
 
 /* Main Content */
@@ -869,22 +928,30 @@ table td {
     display: flex;
     align-items: center;
     gap: 1rem;
+    margin-left: auto;
+    padding-left: 2rem;
+    position: relative;
+}
+
+#translate-btn {
+    position: absolute;
+    right: -60px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .login-btn {
     color: var(--text-light);
     text-decoration: none;
     padding: 0.5rem 1rem;
-    border: 1px solid var(--accent-red);
+    border: none;
     border-radius: 4px;
     transition: all 0.3s ease;
     font-weight: 500;
 }
 
 .login-btn:hover {
-    background: var(--accent-red);
-    color: white;
-    transform: translateY(-1px);
+    /* Removido hover do botão login */
 }
 
 /* Menu mobile */
@@ -1097,8 +1164,7 @@ input:focus,
 select:focus,
 textarea:focus,
 button:focus {
-    outline: 2px solid var(--accent-red);
-    outline-offset: 2px;
+    outline: none;
 }
 
 /* Animações suaves */

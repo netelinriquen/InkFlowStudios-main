@@ -63,6 +63,19 @@ class AuthSystem {
         return null;
     }
 
+    // Editar perfil
+    editProfile(e) {
+        e.preventDefault();
+        const currentPath = window.location.pathname;
+        if (currentPath === '/' || currentPath === '/index.html') {
+            window.location.href = 'pages/perfil.html';
+        } else if (currentPath.includes('/pages/')) {
+            window.location.href = 'perfil.html';
+        } else {
+            window.location.href = 'pages/perfil.html';
+        }
+    }
+
     // Fazer logout
     logout() {
         localStorage.removeItem('loginData');
@@ -105,14 +118,22 @@ class AuthSystem {
             // Usuário logado - mostrar botão de logout
             loginLinks.forEach(loginLink => {
                 if (loginLink) {
-                    const user = this.getCurrentUser();
-                    const userName = user ? (user.nome || user.name || user.email.split('@')[0]) : 'Usuário';
-                    loginLink.innerHTML = `${userName} | Sair`;
+                    loginLink.innerHTML = `
+                        <div class="profile-dropdown">
+                            <svg class="profile-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                            <div class="dropdown-menu">
+                                <a href="#" class="dropdown-item" onclick="window.authSystem.editProfile(event)">Editar</a>
+                                <a href="#" class="dropdown-item" onclick="window.authSystem.logout()">Sair</a>
+                            </div>
+                        </div>
+                    `;
                     loginLink.onclick = (e) => {
                         e.preventDefault();
-                        if (confirm('Deseja realmente sair?')) {
-                            this.logout();
-                        }
+                        e.stopPropagation();
+                        const dropdown = loginLink.querySelector('.dropdown-menu');
+                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
                     };
                     loginLink.href = '#';
                 }
@@ -209,4 +230,14 @@ window.addEventListener('load', function() {
     if (window.authSystem) {
         window.authSystem.updateNavigation();
     }
+});
+
+// Fechar dropdown ao clicar fora
+document.addEventListener('click', function(e) {
+    const dropdowns = document.querySelectorAll('.dropdown-menu');
+    dropdowns.forEach(dropdown => {
+        if (!dropdown.parentElement.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
 });
